@@ -28,18 +28,10 @@
   var mymap = L.map('mapid').setView([-7.0252604, 110.8902910], 17);
   
   L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmFubnloYXNiaSIsImEiOiJjazR5NDAyeGwwN3FwM2t0YnhlbTEzazE4In0.Ki9RdnOUANwx5NeK7mHpSQ', {
-    // maxZoom: 18,
     // id: 'mapbox/streets-v11',
     id: 'mapbox/satellite-v9',
     accessToken: 'pk.eyJ1IjoiZmFubnloYXNiaSIsImEiOiJjazR5NDAyeGwwN3FwM2t0YnhlbTEzazE4In0.Ki9RdnOUANwx5NeK7mHpSQ'
   }).addTo(mymap);
-
-  // var circle = L.circle([-7.022888888888889, 110.87297222222222], {
-  //   color: 'red',
-  //   fillColor: '#f03',
-  //   fillOpacity: 0.5,
-  //   radius: 500
-  // }).addTo(mymap);
 
   var polygon = L.polygon([
     [-7.026037, 110.88796],
@@ -71,8 +63,6 @@
 
   // polygon.bindPopup("<b>Fauzan</b><br/>Tanam : 20 Oktober 2019");
 
-  // var ppp = L.polyline([[-7.026271, 110.888733], [-7.025771, 110.888636], [-7.026138, 110.889505]], {color: "yellow"}).addTo(mymap);
-
   var startPol = false;
   var polyline;
   var pols = [];
@@ -97,7 +87,6 @@
   function keyHandler(event) {
     var x = event.which || event.keyCode;
 
-    console.log(x);
     if(x === 97){
       randCol = '#' + (function co(lor){   return (lor +=
               [0,1,2,3,4,5,6,7,8,9,'a','b','c','d','e','f'][Math.floor(Math.random()*16)])
@@ -110,15 +99,9 @@
     }
     else if(x === 115){
       pols = [];
-
-      console.log(polyline)
-      console.log(pols);
       polyline.setLatLngs([pols]);
       
       // a = poyline.remove();
-      // console.log(a);
-
-      console.log(polyline);
       polyline.redraw();
 
       polyline = undefined;
