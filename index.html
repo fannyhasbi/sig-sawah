@@ -4,9 +4,129 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Sistem Informasi Geografis Persawahan</title>
+
+  <link rel="stylesheet" href="assets/leaflet.css">
+  <script src="assets/leaflet.js"></script>
+
+  <style>
+    #mapid {
+      height: 500px;
+      width: auto;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+
+  <title>KKN SIG</title>
 </head>
-<body>
-  <h1>Si Petak</h1>
+<body onkeypress="keyHandler(event)">
+  <h1>KKN SIG AJAHHH</h1>
+
+  <div id="mapid"></div>
+
+  <script>
+  var mymap = L.map('mapid').setView([-7.0252604, 110.8902910], 17);
+  
+  L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmFubnloYXNiaSIsImEiOiJjazR5NDAyeGwwN3FwM2t0YnhlbTEzazE4In0.Ki9RdnOUANwx5NeK7mHpSQ', {
+    // maxZoom: 18,
+    // id: 'mapbox/streets-v11',
+    id: 'mapbox/satellite-v9',
+    accessToken: 'pk.eyJ1IjoiZmFubnloYXNiaSIsImEiOiJjazR5NDAyeGwwN3FwM2t0YnhlbTEzazE4In0.Ki9RdnOUANwx5NeK7mHpSQ'
+  }).addTo(mymap);
+
+  // var circle = L.circle([-7.022888888888889, 110.87297222222222], {
+  //   color: 'red',
+  //   fillColor: '#f03',
+  //   fillOpacity: 0.5,
+  //   radius: 500
+  // }).addTo(mymap);
+
+  var polygon = L.polygon([
+    [-7.026037, 110.88796],
+    [-7.025148, 110.888196],
+    [-7.025217, 110.888486],
+    [-7.02544, 110.888432],
+    [-7.025526, 110.888641],
+    [-7.025771, 110.888615],
+    [-7.026202, 110.888523]
+  ], {color: "#eee"}).addTo(mymap);
+
+  var polygon2 = L.polygon([
+    [-7.025771, 110.888636],
+    [-7.025834, 110.888856],
+    [-7.026271, 110.888733],
+    [-7.026202, 110.888523]
+  ], {color: "#0f1"}).addTo(mymap);
+
+  var polygon3 = L.polygon([
+    [-7.026271, 110.888733],
+    [-7.025691, 110.888937],
+    [-7.025717, 110.889232],
+    [-7.025786, 110.889328],
+    [-7.026042, 110.889296],
+    [-7.02609, 110.889403],
+    [-7.026138, 110.889505],
+    [-7.026479, 110.88943]
+  ]).addTo(mymap);
+
+  // polygon.bindPopup("<b>Fauzan</b><br/>Tanam : 20 Oktober 2019");
+
+  // var ppp = L.polyline([[-7.026271, 110.888733], [-7.025771, 110.888636], [-7.026138, 110.889505]], {color: "yellow"}).addTo(mymap);
+
+  var startPol = false;
+  var polyline;
+  var pols = [];
+
+  var popup = L.popup();
+  function onMapClick(e) {
+    // popup
+    //   .setLatLng(e.latlng)
+    //   .setContent("You clicked the map at " + e.latlng.toString())
+    //   .openOn(mymap);
+
+    if(startPol == true){
+      pols.push([e.latlng["lat"], e.latlng["lng"]]);
+      polyline.redraw();
+    }
+    else {
+      pols.push([e.latlng["lat"], e.latlng["lng"]]);
+      polyline = L.polyline(pols).addTo(mymap);
+    }
+  }
+
+  function keyHandler(event) {
+    var x = event.which || event.keyCode;
+
+    console.log(x);
+    if(x === 97){
+      randCol = '#' + (function co(lor){   return (lor +=
+              [0,1,2,3,4,5,6,7,8,9,'a','b','c','d','e','f'][Math.floor(Math.random()*16)])
+              && (lor.length == 6) ?  lor : co(lor); })('');
+
+      L.polygon([pols], {color: randCol}).addTo(mymap);
+      pols = [];
+
+      polyline = undefined;
+    }
+    else if(x === 115){
+      pols = [];
+
+      console.log(polyline)
+      console.log(pols);
+      polyline.setLatLngs([pols]);
+      
+      // a = poyline.remove();
+      // console.log(a);
+
+      console.log(polyline);
+      polyline.redraw();
+
+      polyline = undefined;
+    }
+  }
+
+  mymap.on('click', onMapClick);
+  </script>
+
 </body>
 </html>
