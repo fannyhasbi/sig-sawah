@@ -34,35 +34,7 @@ var mymap = L.map('mapid').setView([-7.0252604, 110.8902910], 17);
   finishButton.addTo(mymap);
   finishButton.disable();
 
-  var polygon = L.polygon([
-    [-7.026037, 110.88796],
-    [-7.025148, 110.888196],
-    [-7.025217, 110.888486],
-    [-7.02544, 110.888432],
-    [-7.025526, 110.888641],
-    [-7.025771, 110.888615],
-    [-7.026202, 110.888523]
-  ], {color: "#eee"}).addTo(mymap);
-
-  var polygon2 = L.polygon([
-    [-7.025771, 110.888636],
-    [-7.025834, 110.888856],
-    [-7.026271, 110.888733],
-    [-7.026202, 110.888523]
-  ], {color: "#0f1"}).addTo(mymap);
-
-  var polygon3 = L.polygon([
-    [-7.026271, 110.888733],
-    [-7.025691, 110.888937],
-    [-7.025717, 110.889232],
-    [-7.025786, 110.889328],
-    [-7.026042, 110.889296],
-    [-7.02609, 110.889403],
-    [-7.026138, 110.889505],
-    [-7.026479, 110.88943]
-  ]).addTo(mymap);
-
-  polygon.bindPopup("<b>Fauzan</b><br/>Tanam : 20 Oktober 2019");
+  // polygon.bindPopup("<b>Fauzan</b><br/>Tanam : 20 Oktober 2019");
 
   var startPolylineFlag = false;
   var polyline;
