@@ -61,50 +61,49 @@
     [-7.026479, 110.88943]
   ]).addTo(mymap);
 
-  // polygon.bindPopup("<b>Fauzan</b><br/>Tanam : 20 Oktober 2019");
+  polygon.bindPopup("<b>Fauzan</b><br/>Tanam : 20 Oktober 2019");
 
-  var startPol = false;
+  var startPolylineFlag = false;
   var polyline;
   var pols = [];
 
   var popup = L.popup();
   function onMapClick(e) {
-    // popup
-    //   .setLatLng(e.latlng)
-    //   .setContent("You clicked the map at " + e.latlng.toString())
-    //   .openOn(mymap);
-
-    if(startPol == true){
-      pols.push([e.latlng["lat"], e.latlng["lng"]]);
-      polyline.redraw();
-    }
-    else {
+    if(startPolylineFlag != true){
+      startPolyline();
       pols.push([e.latlng["lat"], e.latlng["lng"]]);
       polyline = L.polyline(pols).addTo(mymap);
     }
+    else {
+      pols.push([e.latlng["lat"], e.latlng["lng"]]);
+      polyline.addLatLng(e.latlng);
+    }
+  }
+
+  function startPolyline(){
+    startPolylineFlag = true;
+  }
+  
+  function finishPolyline(){
+    startPolylineFlag = false;
+    pols = [];
+    polyline = undefined;
   }
 
   function keyHandler(event) {
     var x = event.which || event.keyCode;
 
-    if(x === 97){
+    if(x === 97 || x === 13){ // a || Enter
       randCol = '#' + (function co(lor){   return (lor +=
               [0,1,2,3,4,5,6,7,8,9,'a','b','c','d','e','f'][Math.floor(Math.random()*16)])
               && (lor.length == 6) ?  lor : co(lor); })('');
 
-      L.polygon([pols], {color: randCol}).addTo(mymap);
-      pols = [];
-
-      polyline = undefined;
+      h = L.polygon([pols], {color: randCol}).addTo(mymap);
+      finishPolyline();
     }
-    else if(x === 115){
-      pols = [];
-      polyline.setLatLngs([pols]);
-      
-      // a = poyline.remove();
-      polyline.redraw();
-
-      polyline = undefined;
+    else if(x === 115){ // s || Escape
+      mymap.removeLayer(polyline);
+      finishPolyline();
     }
   }
 
