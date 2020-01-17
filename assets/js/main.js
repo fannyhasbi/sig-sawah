@@ -50,13 +50,16 @@ var mymap = L.map('mapid').setView([-7.0252604, 110.8902910], 17);
     else {
       pols.push([e.latlng["lat"], e.latlng["lng"]]);
       polyline.addLatLng(e.latlng);
+
+      if(validateArea()){
+        finishButton.enable();
+      }
     }
   }
 
   function startPolyline(){
     startPolylineFlag = true;
     cancelButton.enable();
-    finishButton.enable();
   }
   
   function finishPolyline(){
@@ -64,14 +67,27 @@ var mymap = L.map('mapid').setView([-7.0252604, 110.8902910], 17);
     pols = [];
     polyline = undefined;
     cancelButton.disable();
+    finishButton.disable();
   }
 
   function cancelPolyline(){
+    if(polyline === undefined) return;
+    
     mymap.removeLayer(polyline);
     finishPolyline();
   }
 
+  function validateArea(){
+    if(pols.length > 2){
+      return true;
+    }
+    return false;
+  }
+
   function drawArea(){
+    if(polyline === undefined) return;
+    if(!validateArea()) return;
+
     randCol = '#' + (function co(lor){   return (lor +=
       [0,1,2,3,4,5,6,7,8,9,'a','b','c','d','e','f'][Math.floor(Math.random()*16)])
       && (lor.length == 6) ?  lor : co(lor); })('');
