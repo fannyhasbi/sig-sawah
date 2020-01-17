@@ -20,6 +20,20 @@ var mymap = L.map('mapid').setView([-7.0252604, 110.8902910], 17);
   cancelButton.addTo(mymap);
   cancelButton.disable();
 
+  finishButton = L.easyButton({
+    id: 'finish-polyline',
+    states: [{
+      icon: 'fas fa-map',
+      title: 'Finish Drawing',
+      stateName: 'finish-polyline',
+      onClick: (btn, map) => {
+        drawArea();
+      }
+    }]
+  });
+  finishButton.addTo(mymap);
+  finishButton.disable();
+
   var polygon = L.polygon([
     [-7.026037, 110.88796],
     [-7.025148, 110.888196],
@@ -70,6 +84,7 @@ var mymap = L.map('mapid').setView([-7.0252604, 110.8902910], 17);
   function startPolyline(){
     startPolylineFlag = true;
     cancelButton.enable();
+    finishButton.enable();
   }
   
   function finishPolyline(){
@@ -84,16 +99,20 @@ var mymap = L.map('mapid').setView([-7.0252604, 110.8902910], 17);
     finishPolyline();
   }
 
+  function drawArea(){
+    randCol = '#' + (function co(lor){   return (lor +=
+      [0,1,2,3,4,5,6,7,8,9,'a','b','c','d','e','f'][Math.floor(Math.random()*16)])
+      && (lor.length == 6) ?  lor : co(lor); })('');
+    L.polygon([pols], {color: randCol}).addTo(mymap);
+    
+    finishPolyline();
+  }
+
   function keyHandler(event) {
     var x = event.which || event.keyCode;
 
     if(x === 97 || x === 13){ // a || Enter
-      randCol = '#' + (function co(lor){   return (lor +=
-              [0,1,2,3,4,5,6,7,8,9,'a','b','c','d','e','f'][Math.floor(Math.random()*16)])
-              && (lor.length == 6) ?  lor : co(lor); })('');
-
-      h = L.polygon([pols], {color: randCol}).addTo(mymap);
-      finishPolyline();
+      drawArea();
     }
     else if(x === 115){ // s
       cancelPolyline();

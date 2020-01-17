@@ -12,3 +12,7 @@ html, body {
   background-color: red;
   color: white;
 }
+#finish-polyline {
+  background-color: #0c0;
+  color: white;
+}
