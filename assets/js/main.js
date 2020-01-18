@@ -6,6 +6,15 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
   accessToken: 'pk.eyJ1IjoiZmFubnloYXNiaSIsImEiOiJjazR5NDAyeGwwN3FwM2t0YnhlbTEzazE4In0.Ki9RdnOUANwx5NeK7mHpSQ'
 }).addTo(mymap);
 
+/**
+ * Singleton Variables
+ * for better sharable state
+ */
+var startPolylineFlag = false;
+var polyline;
+var pols = [];
+var popup = L.popup();
+
 cancelButton = L.easyButton({
   id: 'cancel-polyline',
   states: [{
@@ -27,20 +36,13 @@ finishButton = L.easyButton({
     title: 'Finish Drawing',
     stateName: 'finish-polyline',
     onClick: (btn, map) => {
-      drawArea();
+      popupForm();
     }
   }]
 });
 finishButton.addTo(mymap);
 finishButton.disable();
 
-// polygon.bindPopup("<b>Fauzan</b><br/>Tanam : 20 Oktober 2019");
-
-var startPolylineFlag = false;
-var polyline;
-var pols = [];
-
-var popup = L.popup();
 function onMapClick(e) {
   if(startPolylineFlag != true){
     startPolyline();
@@ -84,26 +86,43 @@ function validateArea(){
   return false;
 }
 
-function drawArea(){
+function drawArea(formValues){
   if(polyline === undefined) return;
   if(!validateArea()) return;
 
   randCol = '#' + (function co(lor){   return (lor +=
     [0,1,2,3,4,5,6,7,8,9,'a','b','c','d','e','f'][Math.floor(Math.random()*16)])
     && (lor.length == 6) ?  lor : co(lor); })('');
-  L.polygon([pols], {color: randCol}).addTo(mymap);
+  let polygon = L.polygon([pols], {color: randCol}).addTo(mymap);
+
+  polygon.bindPopup(`
+    Pemilik : ${formValues.ownerName}<br>
+    Luas : ${formValues.areaField}<br>
+    Tanaman : ${formValues.plant}
+  `);
   
   finishPolyline();
 }
 
-function keyHandler(event) {
-  var x = event.which || event.keyCode;
-
-  if(x === 97 || x === 13){ // a || Enter
-    drawArea();
-  }
-  else if(x === 115){ // s
-    cancelPolyline();
+async function popupForm(){
+  const { value: formValues } = await Swal.fire({
+    title: 'Multiple inputs',
+    html:
+      '<input id="owner-name" class="swal2-input" placeholder="Owner Name">' +
+      '<input id="area-field" class="swal2-input" placeholder="Area Field">' +
+      '<input id="plant" class="swal2-input" placeholder="Plant">',
+    focusConfirm: false,
+    preConfirm: () => {
+      return {
+        ownerName: document.getElementById('owner-name').value,
+        areaField: document.getElementById('area-field').value,
+        plant: document.getElementById('plant').value
+      }
+    }
+  });
+  
+  if (formValues) {
+    drawArea(formValues);
   }
 }
 
