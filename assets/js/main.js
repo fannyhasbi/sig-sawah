@@ -96,28 +96,65 @@ function drawArea(formValues){
   let polygon = L.polygon([pols], {color: randCol}).addTo(mymap);
 
   polygon.bindPopup(`
-    Pemilik : ${formValues.ownerName}<br>
-    Luas : ${formValues.areaField}<br>
-    Tanaman : ${formValues.plant}
-  `);
+    <b>Pemilik</b> : ${formValues.ownerName}<br>
+    <b>Luas</b> : ${formValues.areaField}<br>
+    <b>Tanaman</b> : ${formValues.crop}<br>
+    <b>Tanggal Tanam</b> : ${formValues.plantingDate}
+  `).openPopup();
   
   finishPolyline();
 }
 
+function validateForm(formValues){
+
+}
+
 async function popupForm(){
   const { value: formValues } = await Swal.fire({
-    title: 'Multiple inputs',
-    html:
-      '<input id="owner-name" class="swal2-input" placeholder="Owner Name">' +
-      '<input id="area-field" class="swal2-input" placeholder="Area Field">' +
-      '<input id="plant" class="swal2-input" placeholder="Plant">',
+    title: 'Isi Informasi Lahan',
+    html: `
+      <table>
+        <tr>
+          <th>Pemilik</th>
+          <td><input type="text" id="owner-name" class="swal2-input" placeholder="Pemilik"></td>
+        </tr>
+        <tr>
+          <th>Luas Lahan</th>
+          <td><input type="text" id="area-field" class="swal2-input" placeholder="Luas Lahan"></td>
+        </tr>
+        <tr>
+          <th>Tanaman</th>
+          <td><input type="text" id="crop" class="swal2-input" placeholder="Tanaman"></td>
+        </tr>
+        <tr>
+          <th>Tanggal Tanam</th>
+          <td><input type="text" id="planting-date" class="swal2-input" placeholder="Tanggal Tanam"></td>
+        </tr>
+      </table>
+      `,
     focusConfirm: false,
+    confirmButtonText: 'Simpan',
     preConfirm: () => {
-      return {
+      let v = {
         ownerName: document.getElementById('owner-name').value,
-        areaField: document.getElementById('area-field').value,
-        plant: document.getElementById('plant').value
+        areaField: parseInt(document.getElementById('area-field').value),
+        crop: document.getElementById('crop').value,
+        plantingDate: document.getElementById('planting-date').value,
       }
+
+      console.log(v);
+
+      if(v.ownerName === '' || v.crop === '' || v.plantingDate === ''){
+        Swal.showValidationMessage(`Harap isi semua input yang ada`);
+      }
+      if(v.areaField < 1 || isNaN(v.areaField)){
+        Swal.showValidationMessage(`Format luas lahan salah`);
+      }
+      if(!v.plantingDate.match(/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/i)){
+        Swal.showValidationMessage(`Format tanggal salah`);
+      }
+
+      return v;
     }
   });
   
