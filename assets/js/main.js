@@ -105,10 +105,6 @@ function drawArea(formValues){
   finishPolyline();
 }
 
-function validateForm(formValues){
-
-}
-
 async function popupForm(){
   const { value: formValues } = await Swal.fire({
     title: 'Isi Informasi Lahan',
@@ -128,12 +124,15 @@ async function popupForm(){
         </tr>
         <tr>
           <th>Tanggal Tanam</th>
-          <td><input type="text" id="planting-date" class="swal2-input" placeholder="Tanggal Tanam"></td>
+          <td><input type="text" id="planting-date" class="swal2-input datepickr" placeholder="Tanggal Tanam"></td>
         </tr>
       </table>
       `,
     focusConfirm: false,
     confirmButtonText: 'Simpan',
+    onOpen: () => {
+      flatpickr(".datepickr", {});
+    },
     preConfirm: () => {
       let v = {
         ownerName: document.getElementById('owner-name').value,
@@ -141,8 +140,6 @@ async function popupForm(){
         crop: document.getElementById('crop').value,
         plantingDate: document.getElementById('planting-date').value,
       }
-
-      console.log(v);
 
       if(v.ownerName === '' || v.crop === '' || v.plantingDate === ''){
         Swal.showValidationMessage(`Harap isi semua input yang ada`);
