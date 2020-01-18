@@ -21,6 +21,18 @@ L.marker(centerView, {
   title: "Kantor Balai Desa"
 }).addTo(mymap);
 
+centerButton = L.easyButton({
+  id: 'center-view-button',
+  states: [{
+    icon: 'fas fa-map-marker-alt',
+    title: 'Center to Kantor Balai Desa',
+    stateName: 'center-view',
+    onClick: (btn, map) => {
+      centerizeView();
+    }
+  }]
+}).addTo(mymap);
+
 cancelButton = L.easyButton({
   id: 'cancel-polyline',
   states: [{
@@ -63,6 +75,15 @@ function onMapClick(e) {
       finishButton.enable();
     }
   }
+}
+
+function centerizeView(){
+  mymap.panTo(
+    new L.LatLng(centerView[0], centerView[1]),
+    {
+      duration: 1
+    }
+  );
 }
 
 function startPolyline(){
