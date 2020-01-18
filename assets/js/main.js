@@ -1,4 +1,5 @@
-var mymap = L.map('mapid').setView([-7.0252604, 110.8902910], 17);
+var centerView = [-7.0252604, 110.8902910];
+var mymap = L.map('mapid').setView(centerView, 16);
 
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmFubnloYXNiaSIsImEiOiJjazR5NDAyeGwwN3FwM2t0YnhlbTEzazE4In0.Ki9RdnOUANwx5NeK7mHpSQ', {
   id: 'mapbox/streets-v11',
@@ -14,6 +15,11 @@ var startPolylineFlag = false;
 var polyline;
 var pols = [];
 var popup = L.popup();
+
+// Balai Desa
+L.marker(centerView, {
+  title: "Kantor Balai Desa"
+}).addTo(mymap);
 
 cancelButton = L.easyButton({
   id: 'cancel-polyline',
