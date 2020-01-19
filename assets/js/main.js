@@ -12,9 +12,9 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
  * for better sharable state
  */
 var startPolylineFlag = false;
-var polyline;
+var polyline = undefined;
 var pols = [];
-var popup = L.popup();
+var polygon = undefined;
 // Check whether the drawing state by button is active
 var drawingState = false;
 
@@ -73,7 +73,7 @@ finishButton = L.easyButton({
     title: 'Selesai Menggambar',
     stateName: 'finish-polyline',
     onClick: (btn, map) => {
-      popupForm();
+      drawArea();
     }
   }]
 });
@@ -132,23 +132,31 @@ function validateArea(){
   return false;
 }
 
-function drawArea(formValues){
+function drawArea(){
   if(polyline === undefined) return;
   if(!validateArea()) return;
+
+  drawingState = false;
 
   randCol = '#' + (function co(lor){   return (lor +=
     [0,1,2,3,4,5,6,7,8,9,'a','b','c','d','e','f'][Math.floor(Math.random()*16)])
     && (lor.length == 6) ?  lor : co(lor); })('');
-  let polygon = L.polygon([pols], {color: randCol}).addTo(mymap);
-
-  polygon.bindPopup(`
-    <b>Pemilik</b> : ${formValues.ownerName}<br>
-    <b>Luas</b> : ${formValues.areaField}<br>
-    <b>Tanaman</b> : ${formValues.crop}<br>
-    <b>Tanggal Tanam</b> : ${formValues.plantingDate}
-  `).openPopup();
   
-  finishPolyline();
+  polygon = L.polygon([pols], {color: randCol}).addTo(mymap);
+  let popup = L.popup({
+    closeButton: false,
+    autoClose: false,
+    closeOnEscapeKey: false,
+    closeOnClick: false
+  })
+  .setContent(`<button onclick="cancelArea()"><i class="fa fa-times-circle"></i></button> | <button onclick="popupForm()"><i class="fa fa-check-circle"></i></button>`);
+
+  polygon.bindPopup(popup).openPopup();
+}
+
+function cancelArea(){
+  drawingState = true;
+  mymap.removeLayer(polygon);
 }
 
 async function popupForm(){
@@ -200,10 +208,18 @@ async function popupForm(){
       return v;
     }
   });
+
+  polygon.closePopup();
+  polygon.unbindPopup();
+  polygon.bindPopup(`
+    <b>Pemilik</b> : ${formValues.ownerName}<br>
+    <b>Luas</b> : ${formValues.areaField}<br>
+    <b>Tanaman</b> : ${formValues.crop}<br>
+    <b>Tanggal Tanam</b> : ${formValues.plantingDate}
+  `).openPopup();
   
-  if (formValues) {
-    drawArea(formValues);
-  }
+  drawingState = true;
+  finishPolyline();
 }
 
 mymap.on('click', onMapClick);
