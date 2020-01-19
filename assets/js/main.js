@@ -42,7 +42,6 @@ startDrawingButton = L.easyButton({
     title: 'Mulai Menggambar',
     stateName: 'start-polyline',
     onClick: (btn, map) => {
-      console.log(btn.button.style);
       btn.button.style.backgroundColor = "#f00";
       btn.button.style.color = "#fff";
       document.getElementById("mapid").style.cursor = "crosshair";
@@ -52,7 +51,7 @@ startDrawingButton = L.easyButton({
     }
   }, {
     icon: 'fa fa-times',
-    title: 'Yoyoy',
+    title: 'Batalkan Menggambar',
     stateName: 'cancel-polyline',
     onClick: (btn, map) => {
       btn.button.style.backgroundColor = "#fff";
@@ -66,20 +65,6 @@ startDrawingButton = L.easyButton({
   }]
 });
 startDrawingButton.addTo(mymap);
-
-cancelButton = L.easyButton({
-  id: 'cancel-polyline',
-  states: [{
-    icon: 'fa fa-times',
-    title: 'Batalkan Menggambar',
-    stateName: 'cancel-polyline',
-    onClick: (btn, map) => {
-      cancelPolyline();
-    }
-  }]
-});
-cancelButton.addTo(mymap);
-cancelButton.disable();
 
 finishButton = L.easyButton({
   id: 'finish-polyline',
@@ -124,14 +109,12 @@ function centerizeView(){
 
 function startPolyline(){
   startPolylineFlag = true;
-  cancelButton.enable();
 }
 
 function finishPolyline(){
   startPolylineFlag = false;
   pols = [];
   polyline = undefined;
-  cancelButton.disable();
   finishButton.disable();
 }
 
