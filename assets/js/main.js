@@ -15,6 +15,8 @@ var startPolylineFlag = false;
 var polyline;
 var pols = [];
 var popup = L.popup();
+// Check whether the drawing state by button is active
+var drawingState = false;
 
 // Balai Desa
 L.marker(centerView, {
@@ -33,11 +35,43 @@ centerButton = L.easyButton({
   }]
 }).addTo(mymap);
 
+startDrawingButton = L.easyButton({
+  id: 'start-drawing-button',
+  states: [{
+    icon: 'fa fa-pen',
+    title: 'Mulai Menggambar',
+    stateName: 'start-polyline',
+    onClick: (btn, map) => {
+      console.log(btn.button.style);
+      btn.button.style.backgroundColor = "#f00";
+      btn.button.style.color = "#fff";
+      document.getElementById("mapid").style.cursor = "crosshair";
+      
+      btn.state('cancel-polyline');
+      drawingState = true;
+    }
+  }, {
+    icon: 'fa fa-times',
+    title: 'Yoyoy',
+    stateName: 'cancel-polyline',
+    onClick: (btn, map) => {
+      btn.button.style.backgroundColor = "#fff";
+      btn.button.style.color = "#000";
+      document.getElementById("mapid").style.cursor = "grab";
+      
+      btn.state('start-polyline');
+      cancelPolyline();
+      drawingState = false;
+    }
+  }]
+});
+startDrawingButton.addTo(mymap);
+
 cancelButton = L.easyButton({
   id: 'cancel-polyline',
   states: [{
     icon: 'fa fa-times',
-    title: 'Cancel Drawing',
+    title: 'Batalkan Menggambar',
     stateName: 'cancel-polyline',
     onClick: (btn, map) => {
       cancelPolyline();
@@ -51,7 +85,7 @@ finishButton = L.easyButton({
   id: 'finish-polyline',
   states: [{
     icon: 'fas fa-map',
-    title: 'Finish Drawing',
+    title: 'Selesai Menggambar',
     stateName: 'finish-polyline',
     onClick: (btn, map) => {
       popupForm();
@@ -62,6 +96,8 @@ finishButton.addTo(mymap);
 finishButton.disable();
 
 function onMapClick(e) {
+  if(!drawingState) return;
+
   if(startPolylineFlag != true){
     startPolyline();
     pols.push([e.latlng["lat"], e.latlng["lng"]]);
