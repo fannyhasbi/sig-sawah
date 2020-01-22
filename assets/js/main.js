@@ -17,6 +17,7 @@ var pols = [];
 var polygon = undefined;
 var helpLine = undefined;
 var helpPolygon = undefined;
+var firstPoint = L.circleMarker();
 // Check whether the drawing state by button is active
 var drawingState = false;
 
@@ -86,7 +87,7 @@ function onMapClick(e) {
   if(!drawingState) return;
 
   if(startPolylineFlag != true){
-    startPolyline();
+    startPolyline(e.latlng);
     pols.push([e.latlng["lat"], e.latlng["lng"]]);
     polyline = L.polyline(pols).addTo(mymap);
   }
@@ -127,7 +128,8 @@ function centerizeView(){
   );
 }
 
-function startPolyline(){
+function startPolyline(latlng){
+  placeFirstPoint(latlng);
   startPolylineFlag = true;
 }
 
@@ -207,6 +209,19 @@ function removeMapLayers(){
   mymap.removeLayer(polyline);
   mymap.removeLayer(helpLine);
   mymap.removeLayer(helpPolygon);
+  mymap.removeLayer(firstPoint);
+}
+
+function placeFirstPoint(latlng){
+  firstPoint = L.circleMarker(latlng, {
+    radius: 6
+  });
+  firstPoint.addTo(mymap);
+  firstPoint.on('click', function(){
+    if(validateArea()){
+      drawArea();
+    }
+  });
 }
 
 async function popupForm(){
@@ -234,6 +249,7 @@ async function popupForm(){
       `,
     focusConfirm: false,
     confirmButtonText: 'Simpan',
+    allowOutsideClick: false,
     onOpen: () => {
       flatpickr(".datepickr", {});
     },
