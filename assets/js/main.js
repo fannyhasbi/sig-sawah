@@ -16,6 +16,7 @@ var polyline = undefined;
 var pols = [];
 var polygon = undefined;
 var helpLine = undefined;
+var helpPolygon = undefined;
 // Check whether the drawing state by button is active
 var drawingState = false;
 
@@ -94,9 +95,26 @@ function onMapClick(e) {
     polyline.addLatLng(e.latlng);
 
     if(validateArea()){
+      drawHelpArea();
       finishButton.enable();
     }
   }
+}
+
+function onMapMouseMove(e) {
+  if(!drawingState || pols.length < 1) return;
+  if(helpLine){
+    mymap.removeLayer(helpLine);
+  }
+
+  let latlngs = [pols.slice(-1)[0], [e.latlng.lat, e.latlng.lng]];
+
+  helpLine = L.polyline(latlngs, {
+    color: 'grey',
+    weight: 2,
+    dashArray: '7'
+  });
+  helpLine.addTo(mymap);
 }
 
 function centerizeView(){
@@ -113,8 +131,7 @@ function startPolyline(){
 }
 
 function finishPolyline(){
-  mymap.removeLayer(polyline);
-  mymap.removeLayer(helpLine);
+  removeMapLayers();
 
   startPolylineFlag = false;
   pols = [];
@@ -126,8 +143,7 @@ function finishPolyline(){
 function cancelPolyline(){
   if(polyline === undefined) return;
   
-  mymap.removeLayer(polyline);
-  mymap.removeLayer(helpLine);
+  removeMapLayers();
   finishPolyline();
 }
 
@@ -162,9 +178,33 @@ function drawArea(){
   polygon.bindPopup(popup).openPopup();
 }
 
+function drawHelpArea(){
+  if(polyline === undefined) return;
+  if(!validateArea()) return;
+  
+  if(helpPolygon){
+    mymap.removeLayer(helpPolygon);
+  }
+  if(helpLine){
+    mymap.removeLayer(helpLine);
+  }
+
+  helpPolygon = L.polygon([pols], {
+    color: '#ee0',
+    stroke: false
+  });
+  helpPolygon.addTo(mymap);
+}
+
 function cancelArea(){
   drawingState = true;
   mymap.removeLayer(polygon);
+}
+
+function removeMapLayers(){
+  mymap.removeLayer(polyline);
+  mymap.removeLayer(helpLine);
+  mymap.removeLayer(helpPolygon);
 }
 
 async function popupForm(){
@@ -231,23 +271,4 @@ async function popupForm(){
 }
 
 mymap.on('click', onMapClick);
-
-var lat, lng;
-mymap.addEventListener('mousemove', function(e) {
-  if(!drawingState || pols.length < 1) return;
-  if(helpLine){
-    mymap.removeLayer(helpLine);
-  }
-
-  lat = e.latlng.lat;
-  lng = e.latlng.lng;
-
-  let latlngs = [pols.slice(-1)[0], [lat, lng]];
-
-  helpLine = L.polyline(latlngs, {
-    color: 'grey',
-    weight: 2,
-    dashArray: '7'
-  });
-  helpLine.addTo(mymap);
-});
+mymap.addEventListener('mousemove', onMapMouseMove);
