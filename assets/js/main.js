@@ -142,6 +142,8 @@ function drawArea(){
   if(polyline === undefined) return;
   if(!validateArea()) return;
 
+  mymap.removeLayer(helpLine);
+
   drawingState = false;
 
   randCol = '#' + (function co(lor){   return (lor +=
