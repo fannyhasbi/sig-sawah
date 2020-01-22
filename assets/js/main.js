@@ -15,6 +15,7 @@ var startPolylineFlag = false;
 var polyline = undefined;
 var pols = [];
 var polygon = undefined;
+var helpLine = undefined;
 // Check whether the drawing state by button is active
 var drawingState = false;
 
@@ -112,9 +113,13 @@ function startPolyline(){
 }
 
 function finishPolyline(){
+  mymap.removeLayer(polyline);
+  mymap.removeLayer(helpLine);
+
   startPolylineFlag = false;
   pols = [];
   polyline = undefined;
+  
   finishButton.disable();
 }
 
@@ -122,6 +127,7 @@ function cancelPolyline(){
   if(polyline === undefined) return;
   
   mymap.removeLayer(polyline);
+  mymap.removeLayer(helpLine);
   finishPolyline();
 }
 
@@ -223,3 +229,23 @@ async function popupForm(){
 }
 
 mymap.on('click', onMapClick);
+
+var lat, lng;
+mymap.addEventListener('mousemove', function(e) {
+  if(!drawingState || pols.length < 1) return;
+  if(helpLine){
+    mymap.removeLayer(helpLine);
+  }
+
+  lat = e.latlng.lat;
+  lng = e.latlng.lng;
+
+  let latlngs = [pols.slice(-1)[0], [lat, lng]];
+
+  helpLine = L.polyline(latlngs, {
+    color: 'grey',
+    weight: 2,
+    dashArray: '7'
+  });
+  helpLine.addTo(mymap);
+});
