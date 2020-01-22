@@ -16,3 +16,6 @@ html, body {
   background-color: #0c0;
   color: white;
 }
+.help-layer {
+  cursor: crosshair; /* default map cursor type */
+}

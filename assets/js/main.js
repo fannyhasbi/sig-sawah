@@ -112,7 +112,8 @@ function onMapMouseMove(e) {
   helpLine = L.polyline(latlngs, {
     color: 'grey',
     weight: 2,
-    dashArray: '7'
+    dashArray: '7',
+    className: 'help-layer'
   });
   helpLine.addTo(mymap);
 }
@@ -191,7 +192,8 @@ function drawHelpArea(){
 
   helpPolygon = L.polygon([pols], {
     color: '#ee0',
-    stroke: false
+    stroke: false,
+    className: 'help-layer'
   });
   helpPolygon.addTo(mymap);
 }
