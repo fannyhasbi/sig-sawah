@@ -123,6 +123,10 @@ function onKeyDownEscape(){
   cancelPolyline();
 }
 
+function onKeyDownEnter(){
+  drawArea();
+}
+
 function centerizeView(){
   mymap.panTo(
     new L.LatLng(centerView[0], centerView[1]),
@@ -257,6 +261,7 @@ async function popupForm(){
       `,
     focusConfirm: false,
     confirmButtonText: 'Simpan',
+    confirmButtonColor: '#0c0',
     allowOutsideClick: false,
     allowEscapeKey: false,
     allowEnterKey: false,
@@ -317,9 +322,14 @@ async function popupForm(){
 mymap.on('click', onMapClick);
 mymap.addEventListener('mousemove', onMapMouseMove);
 document.onkeydown = (e) => {
+  if(!drawingState) return;
+  
   switch(e.keyCode){
     case 27:
       onKeyDownEscape();
+      break;
+    case 13:
+      onKeyDownEnter();
       break;
   }
 }
