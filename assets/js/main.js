@@ -225,9 +225,13 @@ function removeMapLayers(){
 }
 
 function placeFirstPoint(latlng){
-  firstPoint = L.circleMarker(latlng, {
-    radius: 6
+  let icon = L.divIcon({
+    className: 'first-point',
+    iconSize: [10, 10],
+    iconAnchor: [5, 5]
   });
+
+  firstPoint = L.marker(latlng, {icon: icon});
   firstPoint.addTo(mymap);
   firstPoint.on('click', function(){
     if(validateArea()){
@@ -292,12 +296,14 @@ async function popupForm(){
     }
   });
 
+  polygon.closePopup();
+  polygon.unbindPopup();
+
   if(dismiss === Swal.DismissReason.cancel){
+    cancelArea();
     return;
   }
 
-  polygon.closePopup();
-  polygon.unbindPopup();
   polygon.bindPopup(`
     <b>Pemilik</b> : ${formValues.ownerName}<br>
     <b>Luas</b> : ${formValues.areaField}<br>

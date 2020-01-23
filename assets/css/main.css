@@ -19,3 +19,8 @@ html, body {
 .help-layer {
   cursor: crosshair; /* default map cursor type */
 }
+.first-point {
+  background-color: #fff;
+  border: 1px solid #999;
+  border-radius: 50px;
+}
