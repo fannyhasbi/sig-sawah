@@ -176,7 +176,7 @@ function drawArea(){
     closeOnEscapeKey: false,
     closeOnClick: false
   })
-  .setContent(`<button onclick="cancelArea()"><i class="fa fa-times-circle"></i></button> | <button onclick="popupForm()"><i class="fa fa-check-circle"></i></button>`);
+  .setContent(`<button onclick="cancelArea()"><i class="fa fa-times-circle"></i></button> | <button onclick="confirmArea()"><i class="fa fa-check-circle"></i></button>`);
 
   polygon.bindPopup(popup).openPopup();
 }
@@ -205,6 +205,10 @@ function cancelArea(){
   mymap.removeLayer(polygon);
 }
 
+function confirmArea(){
+  popupForm();
+}
+
 function removeMapLayers(){
   mymap.removeLayer(polyline);
   mymap.removeLayer(helpLine);
@@ -225,7 +229,7 @@ function placeFirstPoint(latlng){
 }
 
 async function popupForm(){
-  const { value: formValues } = await Swal.fire({
+  const { value: formValues, dismiss } = await Swal.fire({
     title: 'Isi Informasi Lahan',
     html: `
       <table>
@@ -250,6 +254,10 @@ async function popupForm(){
     focusConfirm: false,
     confirmButtonText: 'Simpan',
     allowOutsideClick: false,
+    allowEscapeKey: false,
+    allowEnterKey: false,
+    showCancelButton: true,
+    cancelButtonText: 'Batalkan',
     onOpen: () => {
       flatpickr(".datepickr", {});
     },
@@ -275,6 +283,10 @@ async function popupForm(){
     }
   });
 
+  if(dismiss === Swal.DismissReason.cancel){
+    return;
+  }
+
   polygon.closePopup();
   polygon.unbindPopup();
   polygon.bindPopup(`
@@ -284,9 +296,19 @@ async function popupForm(){
     <b>Tanggal Tanam</b> : ${formValues.plantingDate}
   `).openPopup();
   
+  Swal.fire({
+    icon: 'success',
+    text: 'Lahan berhasil disimpan',
+    toast: true,
+    position: 'top',
+    showConfirmButton: false,
+    timer: 4000,
+  });
+  
   drawingState = true;
   finishPolyline();
 }
 
+// event listeners
 mymap.on('click', onMapClick);
 mymap.addEventListener('mousemove', onMapMouseMove);
