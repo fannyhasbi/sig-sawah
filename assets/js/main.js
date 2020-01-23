@@ -119,6 +119,10 @@ function onMapMouseMove(e) {
   helpLine.addTo(mymap);
 }
 
+function onKeyDownEscape(){
+  cancelPolyline();
+}
+
 function centerizeView(){
   mymap.panTo(
     new L.LatLng(centerView[0], centerView[1]),
@@ -312,3 +316,10 @@ async function popupForm(){
 // event listeners
 mymap.on('click', onMapClick);
 mymap.addEventListener('mousemove', onMapMouseMove);
+document.onkeydown = (e) => {
+  switch(e.keyCode){
+    case 27:
+      onKeyDownEscape();
+      break;
+  }
+}
