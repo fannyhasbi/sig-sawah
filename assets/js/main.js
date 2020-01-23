@@ -1,8 +1,8 @@
 var centerView = [-7.0252604, 110.8902910];
-var mymap = L.map('mapid').setView(centerView, 16);
+var mymap = L.map('mapid').setView(centerView, 17);
 
-L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmFubnloYXNiaSIsImEiOiJjazR5NDAyeGwwN3FwM2t0YnhlbTEzazE4In0.Ki9RdnOUANwx5NeK7mHpSQ', {
-  id: 'mapbox/streets-v11',
+L.tileLayer('https://api.mapbox.  com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmFubnloYXNiaSIsImEiOiJjazR5NDAyeGwwN3FwM2t0YnhlbTEzazE4In0.Ki9RdnOUANwx5NeK7mHpSQ', {
+  id: 'mapbox/streets-v11',``
   // id: 'mapbox/satellite-v9',
   accessToken: 'pk.eyJ1IjoiZmFubnloYXNiaSIsImEiOiJjazR5NDAyeGwwN3FwM2t0YnhlbTEzazE4In0.Ki9RdnOUANwx5NeK7mHpSQ'
 }).addTo(mymap);
@@ -69,6 +69,19 @@ startDrawingButton = L.easyButton({
 });
 startDrawingButton.addTo(mymap);
 
+undoButton = L.easyButton({
+  id: 'undo-polyline',
+  states: [{
+    icon: 'fa fa-undo',
+    ttle: 'Batalkan titik terakhir',
+    stateName: 'undo-polyline',
+    onClick: (btn, map) => {
+      undoPoint();
+    }
+  }]
+});
+undoButton.addTo(mymap);
+
 finishButton = L.easyButton({
   id: 'finish-polyline',
   states: [{
@@ -89,7 +102,9 @@ function onMapClick(e) {
   if(startPolylineFlag != true){
     startPolyline(e.latlng);
     pols.push([e.latlng["lat"], e.latlng["lng"]]);
-    polyline = L.polyline(pols).addTo(mymap);
+    polyline = L.polyline(pols, {
+      color: '#ee3'
+    }).addTo(mymap);
   }
   else {
     pols.push([e.latlng["lat"], e.latlng["lng"]]);
@@ -158,6 +173,10 @@ function cancelPolyline(){
   finishPolyline();
 }
 
+function undoPoint(){
+  
+}
+
 function validateArea(){
   if(pols.length > 2){
     return true;
@@ -177,12 +196,15 @@ function drawArea(){
     [0,1,2,3,4,5,6,7,8,9,'a','b','c','d','e','f'][Math.floor(Math.random()*16)])
     && (lor.length == 6) ?  lor : co(lor); })('');
   
-  polygon = L.polygon([pols], {color: randCol}).addTo(mymap);
+  polygon = L.polygon([pols], {
+    color: randCol,
+    fillOpacity: 0.4
+  }).addTo(mymap);
   let popup = L.popup({
     closeButton: false,
     autoClose: false,
     closeOnEscapeKey: false,
-    closeOnClick: false
+    closeOnClick: false,
   })
   .setContent(`<button onclick="cancelArea()"><i class="fa fa-times-circle"></i></button> | <button onclick="confirmArea()"><i class="fa fa-check-circle"></i></button>`);
 
