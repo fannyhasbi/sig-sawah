@@ -147,10 +147,15 @@ function onKeyDownEnter(){
 }
 
 function centerizeView(){
-  mymap.panTo(
+  let zoomLevel = 17;
+  zoomLevel = mymap.getZoom() < zoomLevel ? zoomLevel : mymap.getZoom();
+
+  mymap.setView(
     new L.LatLng(centerView[0], centerView[1]),
+    zoomLevel,
     {
-      duration: 1
+      animate: true,
+      duration: 1.0
     }
   );
 }
