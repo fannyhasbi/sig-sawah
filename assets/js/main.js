@@ -121,19 +121,21 @@ function onMapClick(e) {
 
 function onMapMouseMove(e) {
   if(!drawingState || pols.length < 1) return;
+  
+  let latlngs = [pols[pols.length - 1], [e.latlng.lat, e.latlng.lng]];
+  
   if(helpLine){
-    mymap.removeLayer(helpLine);
+    helpLine.setLatLngs(latlngs);
   }
-
-  let latlngs = [pols.slice(-1)[0], [e.latlng.lat, e.latlng.lng]];
-
-  helpLine = L.polyline(latlngs, {
-    color: 'grey',
-    weight: 2,
-    dashArray: '7',
-    className: 'help-layer'
-  });
-  helpLine.addTo(mymap);
+  else {
+    helpLine = L.polyline(latlngs, {
+      color: 'grey',
+      weight: 2,
+      dashArray: '7',
+      className: 'help-layer'
+    });
+    helpLine.addTo(mymap);
+  }
 }
 
 function onKeyDownEscape(){
