@@ -81,6 +81,7 @@ undoButton = L.easyButton({
   }]
 });
 undoButton.addTo(mymap);
+undoButton.disable();
 
 finishButton = L.easyButton({
   id: 'finish-polyline',
@@ -109,6 +110,7 @@ function onMapClick(e) {
   else {
     pols.push([e.latlng["lat"], e.latlng["lng"]]);
     polyline.addLatLng(e.latlng);
+    undoButton.enable();
 
     if(validateArea()){
       drawHelpArea();
@@ -164,6 +166,7 @@ function finishPolyline(){
   polyline = undefined;
   
   finishButton.disable();
+  undoButton.disable();
 }
 
 function cancelPolyline(){
@@ -174,7 +177,23 @@ function cancelPolyline(){
 }
 
 function undoPoint(){
+  if(!drawingState) return;
+  if(pols.length == 0) return;
+
   pols.pop();
+  mymap.removeLayer(helpLine);
+  
+  polyline.setLatLngs(pols);
+  helpPolygon.setLatLngs(pols);
+
+  if(!validateArea()){
+    finishButton.disable();
+  }
+
+  if(pols.length == 0){
+    finishPolyline();
+    undoButton.disable();
+  }
 }
 
 function validateArea(){
