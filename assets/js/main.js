@@ -181,7 +181,6 @@ function undoPoint(){
   if(pols.length == 0) return;
 
   pols.pop();
-  mymap.removeLayer(helpLine);
   
   polyline.setLatLngs(pols);
   helpPolygon.setLatLngs(pols);
@@ -206,8 +205,6 @@ function validateArea(){
 function drawArea(){
   if(polyline === undefined) return;
   if(!validateArea()) return;
-
-  mymap.removeLayer(helpLine);
 
   drawingState = false;
 
@@ -235,18 +232,16 @@ function drawHelpArea(){
   if(!validateArea()) return;
   
   if(helpPolygon){
-    mymap.removeLayer(helpPolygon);
+    helpPolygon.setLatLngs(pols)
   }
-  if(helpLine){
-    mymap.removeLayer(helpLine);
+  else {
+    helpPolygon = L.polygon([pols], {
+      color: '#ee0',
+      stroke: false,
+      className: 'help-layer'
+    });
+    helpPolygon.addTo(mymap);
   }
-
-  helpPolygon = L.polygon([pols], {
-    color: '#ee0',
-    stroke: false,
-    className: 'help-layer'
-  });
-  helpPolygon.addTo(mymap);
 }
 
 function cancelArea(){
