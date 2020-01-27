@@ -165,7 +165,10 @@ function finishPolyline(){
 
   startPolylineFlag = false;
   pols = [];
+  polygon = undefined;
   polyline = undefined;
+  helpLine = undefined;
+  helpPolygon = undefined;
   
   finishButton.disable();
   undoButton.disable();
