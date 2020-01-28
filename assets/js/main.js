@@ -290,24 +290,30 @@ async function popupForm(){
   const { value: formValues, dismiss } = await Swal.fire({
     title: 'Isi Informasi Lahan',
     html: `
-      <table>
-        <tr>
-          <th>Pemilik</th>
-          <td><input type="text" id="owner-name" class="swal2-input" placeholder="Pemilik"></td>
-        </tr>
-        <tr>
-          <th>Luas Lahan</th>
-          <td><input type="text" id="area-field" class="swal2-input" placeholder="Luas Lahan"></td>
-        </tr>
-        <tr>
+      <div id="field-form">
+        <table>
+          <tr>
+            <th>Pemilik</th>
+            <td><input type="text" id="owner-name" class="swal2-input" placeholder="Pemilik"></td>
+          </tr>
+          <tr>
           <th>Tanaman</th>
           <td><input type="text" id="crop" class="swal2-input" placeholder="Tanaman"></td>
-        </tr>
-        <tr>
-          <th>Tanggal Tanam</th>
-          <td><input type="text" id="planting-date" class="swal2-input datepickr" placeholder="Tanggal Tanam"></td>
-        </tr>
-      </table>
+          </tr>
+          <tr>
+            <th>Dusun</th>
+            <td><input type="text" id="hamlet" class="swal2-input" placeholder="Dusun"></td>
+          </tr>
+          <tr>
+            <th>Luas Lahan</th>
+            <td><input type="text" id="area-field" class="swal2-input" placeholder="Luas Lahan"></td>
+          </tr>
+          <tr>
+            <th>Tanggal Tanam</th>
+            <td><input type="text" id="planting-date" class="swal2-input datepickr" placeholder="Tanggal Tanam"></td>
+          </tr>
+        </table>
+      </div>
       `,
     focusConfirm: false,
     confirmButtonText: 'Simpan',
@@ -323,14 +329,19 @@ async function popupForm(){
     preConfirm: () => {
       let v = {
         ownerName: document.getElementById('owner-name').value,
-        areaField: parseInt(document.getElementById('area-field').value),
         crop: document.getElementById('crop').value,
+        hamlet: document.getElementById('hamlet').value,
+        areaField: parseInt(document.getElementById('area-field').value),
         plantingDate: document.getElementById('planting-date').value,
       }
 
-      if(v.ownerName === '' || v.crop === '' || v.plantingDate === ''){
-        Swal.showValidationMessage(`Harap isi semua input yang ada`);
+      // check empty value
+      for (let [k, val] of Object.entries(v)) {
+        if(val === ''){
+          Swal.showValidationMessage(`Harap isi semua input yang ada`);
+        }
       }
+
       if(v.areaField < 1 || isNaN(v.areaField)){
         Swal.showValidationMessage(`Format luas lahan salah`);
       }
@@ -351,10 +362,28 @@ async function popupForm(){
   }
 
   polygon.bindPopup(`
-    <b>Pemilik</b> : ${formValues.ownerName}<br>
-    <b>Luas</b> : ${formValues.areaField}<br>
-    <b>Tanaman</b> : ${formValues.crop}<br>
-    <b>Tanggal Tanam</b> : ${formValues.plantingDate}
+  <table>
+    <tr>
+      <th>Pemilik</th>
+      <td>${formValues.ownerName}</td>
+    </tr>
+    <tr>
+      <th>Tanaman</th>
+      <td>${formValues.crop}</td>
+    </tr>
+    <tr>
+      <th>Dusun</th>
+      <td>${formValues.hamlet}</td>
+    </tr>
+    <tr>
+      <th>Luas</th>
+      <td>${formValues.areaField} m&sup2;</td>
+    </tr>
+    <tr>
+      <th>Tanggal tanam</th>
+      <td>${formValues.plantingDate}</td>
+    </tr>
+  </table>
   `).openPopup();
   
   Swal.fire({
