@@ -305,10 +305,6 @@ async function popupForm(){
             <td><input type="text" id="hamlet" class="swal2-input" placeholder="Dusun"></td>
           </tr>
           <tr>
-            <th>Luas Lahan</th>
-            <td><input type="text" id="area-field" class="swal2-input" placeholder="Luas Lahan"></td>
-          </tr>
-          <tr>
             <th>Tanggal Tanam</th>
             <td><input type="text" id="planting-date" class="swal2-input datepickr" placeholder="Tanggal Tanam"></td>
           </tr>
@@ -331,7 +327,6 @@ async function popupForm(){
         ownerName: document.getElementById('owner-name').value,
         crop: document.getElementById('crop').value,
         hamlet: document.getElementById('hamlet').value,
-        areaField: parseInt(document.getElementById('area-field').value),
         plantingDate: document.getElementById('planting-date').value,
       }
 
@@ -342,9 +337,6 @@ async function popupForm(){
         }
       }
 
-      if(v.areaField < 1 || isNaN(v.areaField)){
-        Swal.showValidationMessage(`Format luas lahan salah`);
-      }
       if(!v.plantingDate.match(/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/i)){
         Swal.showValidationMessage(`Format tanggal salah`);
       }
@@ -374,10 +366,6 @@ async function popupForm(){
     <tr>
       <th>Dusun</th>
       <td>${formValues.hamlet}</td>
-    </tr>
-    <tr>
-      <th>Luas</th>
-      <td>${formValues.areaField} m&sup2;</td>
     </tr>
     <tr>
       <th>Tanggal tanam</th>
