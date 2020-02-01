@@ -234,6 +234,7 @@ function drawArea(){
   })
   .setContent(`<button onclick="cancelArea()"><i class="fa fa-times-circle"></i></button> | <button onclick="confirmArea()"><i class="fa fa-check-circle"></i></button>`);
 
+  console.log(polygon.toGeoJSON(15));
   polygon.bindPopup(popup).openPopup();
 }
 
@@ -284,6 +285,29 @@ function placeFirstPoint(latlng){
       drawArea();
     }
   });
+}
+
+function getPopupContent(field){
+  return `
+    <table>
+      <tr>
+        <th>Pemilik</th>
+        <td>${field.ownerName}</td>
+      </tr>
+      <tr>
+        <th>Tanaman</th>
+        <td>${field.crop}</td>
+      </tr>
+      <tr>
+        <th>Dusun</th>
+        <td>${field.hamlet}</td>
+      </tr>
+      <tr>
+        <th>Tanggal tanam</th>
+        <td>${field.plantingDate}</td>
+      </tr>
+    </table>
+  `
 }
 
 async function popupForm(){
@@ -353,26 +377,7 @@ async function popupForm(){
     return;
   }
 
-  polygon.bindPopup(`
-  <table>
-    <tr>
-      <th>Pemilik</th>
-      <td>${formValues.ownerName}</td>
-    </tr>
-    <tr>
-      <th>Tanaman</th>
-      <td>${formValues.crop}</td>
-    </tr>
-    <tr>
-      <th>Dusun</th>
-      <td>${formValues.hamlet}</td>
-    </tr>
-    <tr>
-      <th>Tanggal tanam</th>
-      <td>${formValues.plantingDate}</td>
-    </tr>
-  </table>
-  `).openPopup();
+  polygon.bindPopup(getPopupContent(formValues)).openPopup();
   
   Swal.fire({
     icon: 'success',
@@ -394,11 +399,71 @@ document.onkeydown = (e) => {
   if(!drawingState) return;
   
   switch(e.keyCode){
-    case 27:
-      onKeyDownEscape();
-      break;
-    case 13:
-      onKeyDownEnter();
-      break;
+    case 13: onKeyDownEnter(); break;
+    case 27: onKeyDownEscape(); break;
+  }
+};
+
+let sebelum = `{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type":"Feature",
+      "properties":{
+        "color": "#dc3",
+        "popupContent": {
+          "ownerName": "Fanny Hasbi",
+          "crop": "Padi",
+          "hamlet": "Panjunan",
+          "plantingDate": "2019-12-10"
+        }
+      },
+      "geometry":{
+        "type":"Polygon",
+        "coordinates":[[
+          [110.88759541511537,-7.024773407376361],[110.88780999183656,-7.026412667963688],[110.88959097862245,-7.025571749293507],[110.88935494422914,-7.024730829102284],[110.88863611221315,-7.024432781074501],[110.88759541511537,-7.024773407376361]
+        ]]
+      }
+    },
+    {
+      "type":"Feature",
+      "properties":{
+        "color": "#7d9",
+        "popupContent": {
+          "ownerName": "Abda",
+          "crop": "Padi",
+          "hamlet": "Panjunan",
+          "plantingDate": "2019-12-10"
+        }
+      },
+      "geometry":{
+        "type":"Polygon",
+        "coordinates":[[
+          [110.89269161224367,-7.024102799106674],[110.89276671409608,-7.02516725622679],[110.89474081993104,-7.025177900785676],[110.89496612548828,-7.024730829102284],[110.89493393898012,-7.024070865355427],[110.89456915855409,-7.023464123664982],[110.89362502098085,-7.023464123664982],[110.89302420616151,-7.023708949354647],[110.89269161224367,-7.024102799106674]
+        ]]
+      }
+    }
+  ]
+}`;
+
+let cek = JSON.parse(sebelum);
+
+function onEachFeature(feature, layer){
+  if (feature.properties && feature.properties.popupContent) {
+    let content = {
+      ownerName: feature.properties.popupContent.ownerName,
+      crop: feature.properties.popupContent.crop,
+      hamlet: feature.properties.popupContent.hamlet,
+      plantingDate: feature.properties.popupContent.plantingDate
+    }
+    
+    layer.bindPopup(getPopupContent(content));
   }
 }
+
+L.geoJSON(cek, {
+  style: function(feature){
+    return {color: feature.properties.color}
+  },
+  onEachFeature: onEachFeature
+}).addTo(mymap);
