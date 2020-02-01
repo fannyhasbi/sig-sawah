@@ -392,6 +392,66 @@ async function popupForm(){
   finishPolyline();
 }
 
+function getGeoJSONData(){
+  let sebelum = `{
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type":"Feature",
+        "properties":{
+          "color": "#dc3",
+          "popupContent": {
+            "ownerName": "Fanny Hasbi",
+            "crop": "Padi",
+            "hamlet": "Panjunan",
+            "plantingDate": "2019-12-10"
+          }
+        },
+        "geometry":{
+          "type":"Polygon",
+          "coordinates":[[
+            [110.88759541511537,-7.024773407376361],[110.88780999183656,-7.026412667963688],[110.88959097862245,-7.025571749293507],[110.88935494422914,-7.024730829102284],[110.88863611221315,-7.024432781074501],[110.88759541511537,-7.024773407376361]
+          ]]
+        }
+      },
+      {
+        "type":"Feature",
+        "properties":{
+          "color": "#7d9",
+          "popupContent": {
+            "ownerName": "Abda",
+            "crop": "Padi",
+            "hamlet": "Panjunan",
+            "plantingDate": "2019-12-10"
+          }
+        },
+        "geometry":{
+          "type":"Polygon",
+          "coordinates":[[
+            [110.89269161224367,-7.024102799106674],[110.89276671409608,-7.02516725622679],[110.89474081993104,-7.025177900785676],[110.89496612548828,-7.024730829102284],[110.89493393898012,-7.024070865355427],[110.89456915855409,-7.023464123664982],[110.89362502098085,-7.023464123664982],[110.89302420616151,-7.023708949354647],[110.89269161224367,-7.024102799106674]
+          ]]
+        }
+      }
+    ]
+  }`;
+  
+  return JSON.parse(sebelum);
+}
+
+function onEachFeatureCallback(feature, layer){
+  if (feature.properties && feature.properties.popupContent) {
+    let { ownerName, crop, hamlet, plantingDate } = feature.properties.popupContent;
+    let content = {
+      ownerName: ownerName,
+      crop: crop,
+      hamlet: hamlet,
+      plantingDate: plantingDate
+    }
+    
+    layer.bindPopup(getPopupContent(content));
+  }
+}
+
 // event listeners
 mymap.on('click', onMapClick);
 mymap.addEventListener('mousemove', onMapMouseMove);
@@ -404,66 +464,9 @@ document.onkeydown = (e) => {
   }
 };
 
-let sebelum = `{
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type":"Feature",
-      "properties":{
-        "color": "#dc3",
-        "popupContent": {
-          "ownerName": "Fanny Hasbi",
-          "crop": "Padi",
-          "hamlet": "Panjunan",
-          "plantingDate": "2019-12-10"
-        }
-      },
-      "geometry":{
-        "type":"Polygon",
-        "coordinates":[[
-          [110.88759541511537,-7.024773407376361],[110.88780999183656,-7.026412667963688],[110.88959097862245,-7.025571749293507],[110.88935494422914,-7.024730829102284],[110.88863611221315,-7.024432781074501],[110.88759541511537,-7.024773407376361]
-        ]]
-      }
-    },
-    {
-      "type":"Feature",
-      "properties":{
-        "color": "#7d9",
-        "popupContent": {
-          "ownerName": "Abda",
-          "crop": "Padi",
-          "hamlet": "Panjunan",
-          "plantingDate": "2019-12-10"
-        }
-      },
-      "geometry":{
-        "type":"Polygon",
-        "coordinates":[[
-          [110.89269161224367,-7.024102799106674],[110.89276671409608,-7.02516725622679],[110.89474081993104,-7.025177900785676],[110.89496612548828,-7.024730829102284],[110.89493393898012,-7.024070865355427],[110.89456915855409,-7.023464123664982],[110.89362502098085,-7.023464123664982],[110.89302420616151,-7.023708949354647],[110.89269161224367,-7.024102799106674]
-        ]]
-      }
-    }
-  ]
-}`;
-
-let cek = JSON.parse(sebelum);
-
-function onEachFeature(feature, layer){
-  if (feature.properties && feature.properties.popupContent) {
-    let content = {
-      ownerName: feature.properties.popupContent.ownerName,
-      crop: feature.properties.popupContent.crop,
-      hamlet: feature.properties.popupContent.hamlet,
-      plantingDate: feature.properties.popupContent.plantingDate
-    }
-    
-    layer.bindPopup(getPopupContent(content));
-  }
-}
-
-L.geoJSON(cek, {
+L.geoJSON(getGeoJSONData(), {
   style: function(feature){
     return {color: feature.properties.color}
   },
-  onEachFeature: onEachFeature
+  onEachFeature: onEachFeatureCallback
 }).addTo(mymap);
