@@ -52,7 +52,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['sig'] = 'SawahGIS/index';
 
 // GIS map rest
-$route['api/sawah'] = 'SawahAPI/get';
+$route['api/sawah'] = 'SawahAPI';
 
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';

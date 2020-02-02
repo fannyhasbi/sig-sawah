@@ -418,31 +418,22 @@ function sendPolygonJSON(data){
 }
 
 function getGeoJSONData(){
-  let sebelum = `{
-    "type": "FeatureCollection",
-    "features": [
-      {
-        "type":"Feature",
-        "properties":{
-          "color": "#7d9",
-          "popupContent": {
-            "ownerName": "Abda",
-            "crop": "Padi",
-            "hamlet": "Panjunan",
-            "plantingDate": "2019-12-10"
-          }
-        },
-        "geometry":{
-          "type":"Polygon",
-          "coordinates":[[
-            [110.89269161224367,-7.024102799106674],[110.89276671409608,-7.02516725622679],[110.89474081993104,-7.025177900785676],[110.89496612548828,-7.024730829102284],[110.89493393898012,-7.024070865355427],[110.89456915855409,-7.023464123664982],[110.89362502098085,-7.023464123664982],[110.89302420616151,-7.023708949354647],[110.89269161224367,-7.024102799106674]
-          ]]
-        }
-      }
-    ]
-  }`;
+  let yoyoy;
+
+  $.ajax({
+    url: 'http://localhost/sig-sawah/api/sawah',
+    type: 'GET',
+    async: false,
+    cache: false,
+    error: function(){
+        console.log(err);
+    },
+    success: function(data){ 
+      yoyoy = data;
+    }
+  });
   
-  return JSON.parse(sebelum);
+  return yoyoy;
 }
 
 function onEachFeatureCallback(feature, layer){
