@@ -1,4 +1,4 @@
-var centerView = [-7.0252604, 110.8902910];
+var centerView = new L.LatLng(-7.0252604, 110.8902910)
 var mymap = L.map('mapid').setView(centerView, 17);
 
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmFubnloYXNiaSIsImEiOiJjazR5NDAyeGwwN3FwM2t0YnhlbTEzazE4In0.Ki9RdnOUANwx5NeK7mHpSQ', {
@@ -151,7 +151,7 @@ function centerizeView(){
   zoomLevel = mymap.getZoom() < zoomLevel ? zoomLevel : mymap.getZoom();
 
   mymap.setView(
-    new L.LatLng(centerView[0], centerView[1]),
+    centerView,
     zoomLevel,
     {
       animate: true,
