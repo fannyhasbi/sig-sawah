@@ -49,7 +49,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-$route['sig'] = 'SawahGISAdmin/index';
+$route['sig/admin'] = 'SawahGISAdmin/index';
+$route['sig'] = 'SawahGIS/index';
 
 // GIS map rest
 $route['api/sawah'] = 'SawahAPI';

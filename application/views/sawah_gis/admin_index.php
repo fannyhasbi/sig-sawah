@@ -6,17 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
   <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="<?= base_url('assets/css/bootstrap.min.css') ?>">
 
-  <link rel="stylesheet" href="assets/css/leaflet.css">
-  <link rel="stylesheet" href="assets/css/easy-button.css">
-  <link rel="stylesheet" href="assets/css/fontawesome.min.css">
-  <link rel="stylesheet" href="assets/css/flatpickr.min.css">
-  <link rel="stylesheet" href="assets/css/main.css">
-  <script src="assets/js/leaflet.js"></script>
-  <script src="assets/js/easy-button.js"></script>
-  <script src="assets/js/sweetalert2.min.js"></script>
-  <script src="assets/js/flatpickr.js"></script>
+  <link rel="stylesheet" href="<?= base_url('assets/css/leaflet.css'); ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/easy-button.css'); ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/fontawesome.min.css'); ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/flatpickr.min.css'); ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/main.css'); ?>">
+  <script src="<?= base_url('assets/js/leaflet.js'); ?>"></script>
+  <script src="<?= base_url('assets/js/easy-button.js'); ?>"></script>
+  <script src="<?= base_url('assets/js/sweetalert2.min.js'); ?>"></script>
+  <script src="<?= base_url('assets/js/flatpickr.js'); ?>"></script>
 
   <title>Sistem Informasi Geografis Persawahan</title>
 </head>
@@ -40,9 +40,9 @@
     </footer>
   </div>
   
-  <script src="assets/js/jquery-3.4.1.min.js"></script>
-  <script src="assets/js/popper.min.js"></script>
-  <script src="assets/js/bootstrap.min.js"></script>
-  <script src="assets/js/main.js"></script>
+  <script src="<?= base_url('assets/js/jquery-3.4.1.min.js'); ?>"></script>
+  <script src="<?= base_url('assets/js/popper.min.js'); ?>"></script>
+  <script src="<?= base_url('assets/js/bootstrap.min.js'); ?>"></script>
+  <script src="<?= base_url('assets/js/main.js'); ?>"></script>
 </body>
 </html>

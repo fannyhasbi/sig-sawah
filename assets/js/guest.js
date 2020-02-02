@@ -441,7 +441,7 @@ function getGeoJSONData(){
     type: 'GET',
     async: false,
     cache: false,
-    error: function(err){
+    error: function(){
         console.log(err);
     },
     success: function(response){ 
