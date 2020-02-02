@@ -25,7 +25,7 @@ class SawahAPI extends CI_Controller {
 
   private function get(){
     $all_sawah = $this->sawah_model->getAllSawah();
-    $response = array(
+    $sawah_response = array(
       "type" => "FeatureCollection",
       "features" => array()
     );
@@ -48,8 +48,14 @@ class SawahAPI extends CI_Controller {
         )
       );
       
-      $response["features"][] = $temp;
+      $sawah_response["features"][] = $temp;
     }
+
+    $response = array(
+      "code" => 200,
+      "status" => "success",
+      "data" => $sawah_response
+    );
 
     return $this->output
             ->set_content_type('application/json')
@@ -58,7 +64,18 @@ class SawahAPI extends CI_Controller {
   }
 
   private function post(){
-    echo "yoyoy";
+    $this->sawah_model->addSawah();
+
+    $response = array(
+      "code" => 200,
+      "status" => "success",
+      "data" => null
+    );
+
+    return $this->output
+            ->set_content_type('application/json')
+            ->set_status_header(200)
+            ->set_output(json_encode($response));
   }
 
 }

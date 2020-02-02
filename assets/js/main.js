@@ -428,10 +428,12 @@ function getGeoJSONData(){
     error: function(){
         console.log(err);
     },
-    success: function(data){ 
-      yoyoy = data;
+    success: function(response){ 
+      yoyoy = response.data;
     }
   });
+
+  console.log('yoyoy', yoyoy);
   
   return yoyoy;
 }
