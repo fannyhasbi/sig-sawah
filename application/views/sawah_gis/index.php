@@ -8,8 +8,6 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
 
-
-
   <link rel="stylesheet" href="assets/css/leaflet.css">
   <link rel="stylesheet" href="assets/css/easy-button.css">
   <link rel="stylesheet" href="assets/css/fontawesome.min.css">
