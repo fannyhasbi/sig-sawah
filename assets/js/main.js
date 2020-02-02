@@ -1,4 +1,6 @@
-var centerView = new L.LatLng(-7.0252604, 110.8902910)
+"use strict"
+
+var centerView = new L.LatLng(-7.0252604, 110.8902910);
 var mymap = L.map('mapid').setView(centerView, 17);
 
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmFubnloYXNiaSIsImEiOiJjazR5NDAyeGwwN3FwM2t0YnhlbTEzazE4In0.Ki9RdnOUANwx5NeK7mHpSQ', {
@@ -434,24 +436,6 @@ function getGeoJSONData(){
           "type":"Polygon",
           "coordinates":[[
             [110.88759541511537,-7.024773407376361],[110.88780999183656,-7.026412667963688],[110.88959097862245,-7.025571749293507],[110.88935494422914,-7.024730829102284],[110.88863611221315,-7.024432781074501],[110.88759541511537,-7.024773407376361]
-          ]]
-        }
-      },
-      {
-        "type":"Feature",
-        "properties":{
-          "color": "#7d9",
-          "popupContent": {
-            "ownerName": "Abda",
-            "crop": "Padi",
-            "hamlet": "Panjunan",
-            "plantingDate": "2019-12-10"
-          }
-        },
-        "geometry":{
-          "type":"Polygon",
-          "coordinates":[[
-            [110.89269161224367,-7.024102799106674],[110.89276671409608,-7.02516725622679],[110.89474081993104,-7.025177900785676],[110.89496612548828,-7.024730829102284],[110.89493393898012,-7.024070865355427],[110.89456915855409,-7.023464123664982],[110.89362502098085,-7.023464123664982],[110.89302420616151,-7.023708949354647],[110.89269161224367,-7.024102799106674]
           ]]
         }
       }
