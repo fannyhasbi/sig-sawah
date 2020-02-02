@@ -389,15 +389,6 @@ async function popupForm(color){
   }
   sendPolygonJSON(sendData);
   
-  Swal.fire({
-    icon: 'success',
-    text: 'Lahan berhasil disimpan',
-    toast: true,
-    position: 'top',
-    showConfirmButton: false,
-    timer: 4000,
-  });
-  
   drawingState = true;
   finishPolyline();
 }
@@ -410,11 +401,36 @@ function sendPolygonJSON(data){
       ownerName: data.ownerName,
       crop: data.crop,
       hamlet: data.hamlet,
-      plantingDate: data.plantingDate
+      planting_date: data.plantingDate
     }
   }
-  polygonGeoJSON = JSON.stringify(polygonGeoJSON);
-  console.log(polygonGeoJSON);
+
+  $.ajax({
+    url: 'http://localhost/sig-sawah/api/sawah',
+    type: 'POST',
+    cache: false,
+    data: {
+      color: data.color,
+      owner: data.ownerName,
+      crop: data.crop,
+      hamlet: data.hamlet,
+      planting_date: data.planting_date,
+      coordinates: JSON.stringify(polygonGeoJSON.geometry.coordinates)
+    },
+    error: function(err){
+        console.log('Error sending data', err);
+    },
+    success: function(response){ 
+      Swal.fire({
+        icon: 'success',
+        text: 'Lahan berhasil disimpan',
+        toast: true,
+        position: 'top',
+        showConfirmButton: false,
+        timer: 4000,
+      });
+    }
+  });
 }
 
 function getGeoJSONData(){
@@ -432,8 +448,6 @@ function getGeoJSONData(){
       yoyoy = response.data;
     }
   });
-
-  console.log('yoyoy', yoyoy);
   
   return yoyoy;
 }
