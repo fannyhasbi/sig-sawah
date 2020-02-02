@@ -232,9 +232,8 @@ function drawArea(){
     closeOnEscapeKey: false,
     closeOnClick: false,
   })
-  .setContent(`<button onclick="cancelArea()"><i class="fa fa-times-circle"></i></button> | <button onclick="confirmArea()"><i class="fa fa-check-circle"></i></button>`);
+  .setContent(`<button onclick="cancelArea()"><i class="fa fa-times-circle"></i></button> | <button onclick="confirmArea('${randCol}')"><i class="fa fa-check-circle"></i></button>`);
 
-  console.log(polygon.toGeoJSON(15));
   polygon.bindPopup(popup).openPopup();
 }
 
@@ -260,8 +259,8 @@ function cancelArea(){
   mymap.removeLayer(polygon);
 }
 
-function confirmArea(){
-  popupForm();
+function confirmArea(color){
+  popupForm(color);
 }
 
 function removeMapLayers(){
@@ -310,7 +309,7 @@ function getPopupContent(field){
   `
 }
 
-async function popupForm(){
+async function popupForm(color){
   const { value: formValues, dismiss } = await Swal.fire({
     title: 'Isi Informasi Lahan',
     html: `
@@ -321,8 +320,8 @@ async function popupForm(){
             <td><input type="text" id="owner-name" class="swal2-input" placeholder="Pemilik"></td>
           </tr>
           <tr>
-          <th>Tanaman</th>
-          <td><input type="text" id="crop" class="swal2-input" placeholder="Tanaman"></td>
+            <th>Tanaman</th>
+            <td><input type="text" id="crop" class="swal2-input" placeholder="Tanaman"></td>
           </tr>
           <tr>
             <th>Dusun</th>
@@ -355,7 +354,7 @@ async function popupForm(){
       }
 
       // check empty value
-      for (let [k, val] of Object.entries(v)) {
+      for (let [, val] of Object.entries(v)) {
         if(val === ''){
           Swal.showValidationMessage(`Harap isi semua input yang ada`);
         }
@@ -378,6 +377,15 @@ async function popupForm(){
   }
 
   polygon.bindPopup(getPopupContent(formValues)).openPopup();
+
+  let sendData = {
+    color: color,
+    ownerName: formValues.ownerName,
+    crop: formValues.crop,
+    hamlet: formValues.hamlet,
+    plantingDate: formValues.plantingDate
+  }
+  sendPolygonJSON(sendData);
   
   Swal.fire({
     icon: 'success',
@@ -390,6 +398,21 @@ async function popupForm(){
   
   drawingState = true;
   finishPolyline();
+}
+
+function sendPolygonJSON(data){
+  let polygonGeoJSON = polygon.toGeoJSON(15);
+  polygonGeoJSON.properties = {
+    color: data.color,
+    popupContent: {
+      ownerName: data.ownerName,
+      crop: data.crop,
+      hamlet: data.hamlet,
+      plantingDate: data.plantingDate
+    }
+  }
+  polygonGeoJSON = JSON.stringify(polygonGeoJSON);
+  console.log(polygonGeoJSON);
 }
 
 function getGeoJSONData(){
