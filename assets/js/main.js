@@ -1,3 +1,5 @@
+"use strict"
+
 var centerView = new L.LatLng(-7.0252604, 110.8902910);
 var mymap = L.map('mapid').setView(centerView, 17);
 
@@ -26,7 +28,7 @@ L.marker(centerView, {
   title: "Kantor Balai Desa"
 }).addTo(mymap);
 
-centerButton = L.easyButton({
+var centerButton = L.easyButton({
   id: 'center-view-button',
   states: [{
     icon: 'fas fa-map-marker-alt',
@@ -38,7 +40,7 @@ centerButton = L.easyButton({
   }]
 }).addTo(mymap);
 
-startDrawingButton = L.easyButton({
+var startDrawingButton = L.easyButton({
   id: 'start-drawing-button',
   states: [{
     icon: 'fa fa-pen',
@@ -69,7 +71,7 @@ startDrawingButton = L.easyButton({
 });
 startDrawingButton.addTo(mymap);
 
-undoButton = L.easyButton({
+var undoButton = L.easyButton({
   id: 'undo-polyline',
   states: [{
     icon: 'fa fa-undo',
@@ -83,7 +85,7 @@ undoButton = L.easyButton({
 undoButton.addTo(mymap);
 undoButton.disable();
 
-finishButton = L.easyButton({
+var finishButton = L.easyButton({
   id: 'finish-polyline',
   states: [{
     icon: 'fas fa-map',
@@ -218,7 +220,7 @@ function drawArea(){
 
   drawingState = false;
 
-  randCol = '#' + (function co(lor){   return (lor +=
+  let randCol = '#' + (function co(lor){   return (lor +=
     [0,1,2,3,4,5,6,7,8,9,'a','b','c','d','e','f'][Math.floor(Math.random()*16)])
     && (lor.length == 6) ?  lor : co(lor); })('');
   
