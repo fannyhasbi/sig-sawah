@@ -4,8 +4,8 @@ var centerView = new L.LatLng(-7.0252604, 110.8902910);
 var mymap = L.map('mapid').setView(centerView, 17);
 
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmFubnloYXNiaSIsImEiOiJjazR5NDAyeGwwN3FwM2t0YnhlbTEzazE4In0.Ki9RdnOUANwx5NeK7mHpSQ', {
-  id: 'mapbox/streets-v11',
-  // id: 'mapbox/satellite-v9',
+  // id: 'mapbox/streets-v11',
+  id: 'mapbox/satellite-v9',
   accessToken: 'pk.eyJ1IjoiZmFubnloYXNiaSIsImEiOiJjazR5NDAyeGwwN3FwM2t0YnhlbTEzazE4In0.Ki9RdnOUANwx5NeK7mHpSQ'
 }).addTo(mymap);
 
@@ -421,24 +421,6 @@ function getGeoJSONData(){
   let sebelum = `{
     "type": "FeatureCollection",
     "features": [
-      {
-        "type":"Feature",
-        "properties":{
-          "color": "#dc3",
-          "popupContent": {
-            "ownerName": "Fanny Hasbi",
-            "crop": "Padi",
-            "hamlet": "Panjunan",
-            "plantingDate": "2019-12-10"
-          }
-        },
-        "geometry":{
-          "type":"Polygon",
-          "coordinates":[[
-            [110.88759541511537,-7.024773407376361],[110.88780999183656,-7.026412667963688],[110.88959097862245,-7.025571749293507],[110.88935494422914,-7.024730829102284],[110.88863611221315,-7.024432781074501],[110.88759541511537,-7.024773407376361]
-          ]]
-        }
-      },
       {
         "type":"Feature",
         "properties":{
