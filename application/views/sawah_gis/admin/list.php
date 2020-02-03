@@ -9,6 +9,40 @@
   <link rel="stylesheet" href="<?= base_url('assets/css/bootstrap.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/fontawesome.min.css'); ?>">
   <script src="<?= base_url('assets/js/sweetalert2.min.js'); ?>"></script>
+  <script>
+  function delete_sawah(id){
+    Swal.fire({
+      text: 'Yakin ingin menghapus?',
+      icon: 'warning',
+      showCancelButton: true,
+      preConfirm: () => {
+        $.ajax({
+          url: `<?= site_url('api/sawah/delete'); ?>`,
+          type: 'POST',
+          cache: false,
+          data: {
+            id: id,
+          },
+          error: function(err){
+              console.log('Error deleting data', err);
+          },
+          success: function(response){ 
+            Swal.fire({
+              icon: 'success',
+              text: 'Lahan berhasil dihapus',
+              toast: true,
+              position: 'top',
+              showConfirmButton: false,
+              timer: 4000,
+            });
+
+            location.reload();
+          }
+        });
+      }
+    });
+  }
+  </script>
 
   <title>Dashboard | Sistem Informasi Geografis Persawahan Desa Karangsari</title>
 </head>
@@ -36,14 +70,5 @@
   <script src="<?= base_url('assets/js/jquery-3.4.1.min.js'); ?>"></script>
   <script src="<?= base_url('assets/js/popper.min.js'); ?>"></script>
   <script src="<?= base_url('assets/js/bootstrap.min.js'); ?>"></script>
-  <script>
-  function delete_sawah(id){
-    Swal.fire({
-      text: 'Yakin ingin menghapus?',
-      icon: 'warning',
-      showCancelButton: true
-    });
-  }
-  </script>
 </body>
 </html>
