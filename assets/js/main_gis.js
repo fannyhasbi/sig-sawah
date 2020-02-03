@@ -1,5 +1,6 @@
 "use strict"
 
+var url = "http://localhost/sig-sawah/";
 var centerView = new L.LatLng(-7.0252604, 110.8902910);
 var mymap = L.map('mapid').setView(centerView, 17);
 
@@ -405,8 +406,10 @@ function sendPolygonJSON(data){
     }
   }
 
+  console.log(data);
+
   $.ajax({
-    url: 'http://localhost/sig-sawah/api/sawah',
+    url: `${url}api/sawah`,
     type: 'POST',
     cache: false,
     data: {
@@ -414,13 +417,14 @@ function sendPolygonJSON(data){
       owner: data.ownerName,
       crop: data.crop,
       hamlet: data.hamlet,
-      planting_date: data.planting_date,
+      planting_date: data.plantingDate,
       coordinates: JSON.stringify(polygonGeoJSON.geometry.coordinates)
     },
     error: function(err){
         console.log('Error sending data', err);
     },
     success: function(response){ 
+      console.log(response);
       Swal.fire({
         icon: 'success',
         text: 'Lahan berhasil disimpan',
@@ -437,7 +441,7 @@ function getGeoJSONData(){
   let yoyoy;
 
   $.ajax({
-    url: 'http://localhost/sig-sawah/api/sawah',
+    url: `${url}api/sawah`,
     type: 'GET',
     async: false,
     cache: false,
