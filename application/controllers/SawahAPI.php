@@ -17,6 +17,9 @@ class SawahAPI extends CI_Controller {
       case 'post':
         $this->post();
         break;
+      case 'delete':
+        $this->delete();
+        break;
       default:
         $this->get();
         break;
@@ -70,6 +73,32 @@ class SawahAPI extends CI_Controller {
       "code" => 200,
       "status" => "success",
       "data" => null
+    );
+
+    return $this->output
+            ->set_content_type('application/json')
+            ->set_status_header(200)
+            ->set_output(json_encode($response));
+  }
+
+  public function delete(){
+    if($this->input->method() != 'post'){
+      $response = array(
+        "code" => 400,
+        "message" => "Bad Requst"
+      );
+
+      return $this->output
+            ->set_content_type('application/json')
+            ->set_status_header(400)
+            ->set_output(json_encode($response));
+    }
+      
+    $this->sawah_model->deleteSawah($this->input->post('id'));
+
+    $response = array(
+      "code" => 200,
+      "status" => "success",
     );
 
     return $this->output

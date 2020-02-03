@@ -18,12 +18,6 @@
   <script src="<?= base_url('assets/js/sweetalert2.min.js'); ?>"></script>
   <script src="<?= base_url('assets/js/flatpickr.js'); ?>"></script>
 
-  <style>
-  #header-banner {
-    background: url('<?= base_url("assets/css/sawah.jpg"); ?>')
-  }
-  </style>
-
   <title>Sistem Informasi Geografis Persawahan Desa Karangsari</title>
 </head>
 <body>

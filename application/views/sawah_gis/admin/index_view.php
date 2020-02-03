@@ -18,17 +18,11 @@
   <script src="<?= base_url('assets/js/sweetalert2.min.js'); ?>"></script>
   <script src="<?= base_url('assets/js/flatpickr.js'); ?>"></script>
 
-  <style>
-  #header-banner {
-    background: url('<?= base_url("assets/css/sawah.jpg"); ?>')
-  }
-  </style>
-
   <title>Sistem Informasi Geografis Persawahan Desa Karangsari</title>
 </head>
 <body>
-  <header id="header-banner" class="jumbotron jumbotron-fluid text-center mx-auto my-0 bg-light">
-    <h1 class="display-5 font-weight-normal text-dark">Sistem Informasi Geografis Persawahan Desa Karangsari</h1>
+  <header id="header-banner" class="jumbotron jumbotron-fluid text-center mx-auto my-0 bg-dark">
+    <h1 class="display-5 font-weight-normal text-white">Sistem Informasi Geografis Persawahan Desa Karangsari</h1>
   </header>
   
   <main id="map-container" class="container-fluid p-0">

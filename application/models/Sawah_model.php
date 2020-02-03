@@ -36,6 +36,26 @@ class Sawah_model extends CI_Model {
     $this->db->insert('geometries', $data);
   }
 
+  public function deleteSawah($id_sawah){
+    $this->deleteGeometry($id_sawah);
+
+    $this->db->where('id', $id_sawah);
+    $this->db->delete('field');
+
+    if($this->db->error()["message"]){
+      log_message('error', $this->db->error());
+    }
+  }
+
+  private function deleteGeometry($id_sawah){
+    $this->db->where('field_id', $id_sawah);
+    $this->db->delete('geometries');
+
+    if($this->db->error()["message"]){
+      log_message('error', $this->db->error());
+    }
+  }
+
 }
 
 /* End of file Sawah_model.php */
