@@ -42,13 +42,25 @@
       }
     });
   }
+
+  function update_sawah(id, data){
+    // kess functional
+    // not done yet
+    Swal.fire({
+      text: 'Yakin ingin update?',
+      icon: 'warning',
+      showCancelButton: true
+    });
+
+    console.log('update fired');
+  }
   </script>
 
   <title>Dashboard | Sistem Informasi Geografis Persawahan Desa Karangsari</title>
 </head>
 <body>
   <h1>Daftar Petak Sawah <span class="text-muted">Desa Karangsari</span></h1>
-  <table>
+  <table class="table table-bordered table-responsive">
     <tr>
       <th>No.</th>
       <th>Pemilik</th>
@@ -62,7 +74,10 @@
       <td><?= $sawah->landowner; ?></td>
       <td><?= $sawah->hamlet; ?></td>
       <td><?= $sawah->crop; ?></td>
-      <td><button class="btn btn-danger" onclick="delete_sawah(<?= $sawah->id; ?>)"><i class="fa fa-times"></i></button></td>
+      <td>
+        <button class="btn btn-sm btn-outline-secondary" onclick="update_sawah(<?= $sawah->id; ?>)"><i class="fa fa-pen"></i></button>
+        <button class="btn btn-sm btn-outline-danger" onclick="delete_sawah(<?= $sawah->id; ?>)"><i class="fa fa-times"></i></button>
+      </td>
     </tr>
     <?php $no++; endforeach; ?>
   </table>

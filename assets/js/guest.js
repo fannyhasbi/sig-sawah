@@ -1,11 +1,12 @@
 "use strict"
 
+var url = "http://localhost/sig-sawah/";
 var centerView = new L.LatLng(-7.0252604, 110.8902910);
 var mymap = L.map('mapid').setView(centerView, 17);
 
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmFubnloYXNiaSIsImEiOiJjazR5NDAyeGwwN3FwM2t0YnhlbTEzazE4In0.Ki9RdnOUANwx5NeK7mHpSQ', {
-  id: 'mapbox/streets-v11',
-  // id: 'mapbox/satellite-v9',
+  // id: 'mapbox/streets-v11',
+  id: 'mapbox/satellite-v9',
   accessToken: 'pk.eyJ1IjoiZmFubnloYXNiaSIsImEiOiJjazR5NDAyeGwwN3FwM2t0YnhlbTEzazE4In0.Ki9RdnOUANwx5NeK7mHpSQ'
 }).addTo(mymap);
 
@@ -67,7 +68,7 @@ function getGeoJSONData(){
   let yoyoy;
 
   $.ajax({
-    url: 'http://localhost/sig-sawah/api/sawah',
+    url: url,
     type: 'GET',
     async: false,
     cache: false,
