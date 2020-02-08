@@ -57,6 +57,7 @@ $route['sig/admin/list'] = 'SawahGISAdmin/list';
 
 // GIS map rest
 $route['api/sawah'] = 'SawahAPI';
+$route['api/sawah/(:num)'] = 'SawahAPI/detail/$1';
 $route['api/sawah/delete'] = 'SawahAPI/delete';
 
 $route['default_controller'] = 'welcome';

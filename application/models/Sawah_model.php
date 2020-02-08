@@ -36,6 +36,20 @@ class Sawah_model extends CI_Model {
     $this->db->insert('geometries', $data);
   }
 
+  public function checkSawahByID($id){
+    return $this->db->get_where('field', ['id' => $id])->num_rows();
+  }
+
+  public function getSawahByID($id){
+    $this->db->select('f.id, f.color, f.landowner, f.crop, f.hamlet, f.planting_date, g.geo_type, g.coordinates');
+    $this->db->from('field f');
+    $this->db->join('geometries g', 'f.id = g.field_id');
+    $this->db->where('f.id', (int)$id);
+    $q = $this->db->get();
+    
+    return $q->row();
+  }
+
   public function deleteSawah($id_sawah){
     $this->deleteGeometry($id_sawah);
 

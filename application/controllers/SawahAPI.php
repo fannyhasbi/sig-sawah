@@ -1,5 +1,4 @@
 <?php
-// Outputs are in GeoJSON format
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -9,10 +8,17 @@ class SawahAPI extends CI_Controller {
     $this->load->model('sawah_model');
   }
 
+  private function sendResponse($code = 200, $data = null){
+    $r = $this->output
+      ->set_content_type('application/json')
+      ->set_status_header($code);
+    return $data === null ? $r : $r->set_output(json_encode($data));
+  }
+
   public function index(){
     switch ($this->input->method()) {
       case 'get':
-        $this->get();
+        $this->getAllGeoJSON();
         break;
       case 'post':
         $this->post();
@@ -21,12 +27,12 @@ class SawahAPI extends CI_Controller {
         $this->delete();
         break;
       default:
-        $this->get();
+        $this->getAllGeoJSON();
         break;
     }
   }
 
-  private function get(){
+  private function getAllGeoJSON(){
     $all_sawah = $this->sawah_model->getAllSawah();
     $sawah_response = array(
       "type" => "FeatureCollection",
@@ -60,10 +66,7 @@ class SawahAPI extends CI_Controller {
       "data" => $sawah_response
     );
 
-    return $this->output
-            ->set_content_type('application/json')
-            ->set_status_header(200)
-            ->set_output(json_encode($response));
+    return $this->sendResponse(200, $response);
   }
 
   private function post(){
@@ -75,23 +78,17 @@ class SawahAPI extends CI_Controller {
       "data" => null
     );
 
-    return $this->output
-            ->set_content_type('application/json')
-            ->set_status_header(200)
-            ->set_output(json_encode($response));
+    return $this->sendResponse(200, $response);
   }
 
   public function delete(){
     if($this->input->method() != 'post'){
       $response = array(
         "code" => 400,
-        "message" => "Bad Requst"
+        "message" => "Bad Request"
       );
 
-      return $this->output
-            ->set_content_type('application/json')
-            ->set_status_header(400)
-            ->set_output(json_encode($response));
+      return $this->sendResponse(400, $response);
     }
       
     $this->sawah_model->deleteSawah($this->input->post('id'));
@@ -101,10 +98,19 @@ class SawahAPI extends CI_Controller {
       "status" => "success",
     );
 
-    return $this->output
-            ->set_content_type('application/json')
-            ->set_status_header(200)
-            ->set_output(json_encode($response));
+    return $this->sendResponse(200, $response);
+  }
+
+  public function detail($id){
+    if($this->sawah_model->checkSawahByID($id) == 0){
+      return $this->sendResponse(404, [
+        "code" => 404,
+        "message" => "Field not found"
+      ]);
+    }
+
+    $sawah = $this->sawah_model->getSawahByID($id);
+    return $this->sendResponse(200, $sawah);
   }
 
 }
