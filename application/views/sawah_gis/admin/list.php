@@ -8,7 +8,9 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="<?= base_url('assets/css/bootstrap.min.css') ?>">
   <link rel="stylesheet" href="<?= base_url('assets/css/fontawesome.min.css'); ?>">
+  <link rel="stylesheet" href="<?= base_url('assets/css/flatpickr.min.css'); ?>">
   <script src="<?= base_url('assets/js/sweetalert2.min.js'); ?>"></script>
+  <script src="<?= base_url('assets/js/flatpickr.js'); ?>"></script>
   <script>
   function delete_sawah(id){
     Swal.fire({
@@ -43,16 +45,114 @@
     });
   }
 
-  function update_sawah(id, data){
-    // kess functional
-    // not done yet
-    Swal.fire({
-      text: 'Yakin ingin update?',
-      icon: 'warning',
-      showCancelButton: true
+  async function update_sawah(id){
+    const { value: formValues, dismiss } = await Swal.fire({
+      title: 'Isi Informasi Lahan',
+      html: `
+        <div id="field-form">
+          <table>
+            <tr>
+              <th>Pemilik</th>
+              <td><input type="text" id="owner-name" class="swal2-input" placeholder="Pemilik"></td>
+            </tr>
+            <tr>
+              <th>Tanaman</th>
+              <td><input type="text" id="crop" class="swal2-input" placeholder="Tanaman"></td>
+            </tr>
+            <tr>
+              <th>Dusun</th>
+              <td><input type="text" id="hamlet" class="swal2-input" placeholder="Dusun"></td>
+            </tr>
+            <tr>
+              <th>Tanggal Tanam</th>
+              <td><input type="text" id="planting-date" class="swal2-input datepickr" placeholder="Tanggal Tanam"></td>
+            </tr>
+          </table>
+        </div>
+        `,
+      focusConfirm: false,
+      confirmButtonText: 'Simpan',
+      confirmButtonColor: '#0c0',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      allowEnterKey: false,
+      showCancelButton: true,
+      cancelButtonText: 'Batalkan',
+      onOpen: () => {
+        flatpickr(".datepickr", {});
+      },
+      preConfirm: () => {
+        let v = {
+          ownerName: document.getElementById('owner-name').value,
+          crop: document.getElementById('crop').value,
+          hamlet: document.getElementById('hamlet').value,
+          plantingDate: document.getElementById('planting-date').value,
+        }
+
+        // check empty value
+        for (let [, val] of Object.entries(v)) {
+          if(val === ''){
+            Swal.showValidationMessage(`Harap isi semua input yang ada`);
+          }
+        }
+
+        if(!v.plantingDate.match(/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/i)){
+          Swal.showValidationMessage(`Format tanggal salah`);
+        }
+
+        return v;
+      }
     });
 
-    console.log('update fired');
+    formValues.id = id;
+    updateData(formValues);
+  }
+
+  function updateData(data){
+    $.ajax({
+      url: `<?= base_url('api/sawah/update'); ?>`,
+      type: 'POST',
+      cache: false,
+      data: {
+        id: data.id,
+        owner: data.ownerName,
+        crop: data.crop,
+        hamlet: data.hamlet,
+        planting_date: data.plantingDate,
+      },
+      error: function(err){
+        Swal.fire({
+          title: 'Terjadi kesalahan',
+          icon: 'error',
+        });
+        console.log('Error sending data', err);
+      },
+      success: function(response){
+        if(response.code === 200){
+          Swal.fire({
+            icon: 'success',
+            text: 'Lahan berhasil disimpan',
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 4000,
+          });
+          location.reload();
+        }
+        else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Terjadi kesalahan',
+            text: response.message,
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 4000,
+          });
+          console.log('Error in response', response);
+        }
+      }
+    });
   }
   </script>
 
