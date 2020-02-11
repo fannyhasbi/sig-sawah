@@ -8,7 +8,10 @@ class SawahAPI extends CI_Controller {
     $this->load->model('sawah_model');
   }
 
-  private function sendResponse($code = 200, $data = null){
+  private $response400 = ["code" => 400, "message" => "Bad Request"];
+  private $response404 = ["code" => 404, "message" => "Not Found"];
+
+  private function sendResponse($code, $data = null){
     $r = $this->output
       ->set_content_type('application/json')
       ->set_status_header($code);
@@ -23,11 +26,20 @@ class SawahAPI extends CI_Controller {
       case 'post':
         $this->post();
         break;
-      case 'delete':
-        $this->delete();
-        break;
       default:
         $this->getAllGeoJSON();
+        break;
+    }
+  }
+
+  public function detail($id){
+    switch ($this->input->method()) {
+      case 'get':
+        $this->fieldDetail($id);
+        break;
+      
+      default:
+        return $this->sendResponse(400, $this->response400);
         break;
     }
   }
@@ -81,14 +93,39 @@ class SawahAPI extends CI_Controller {
     return $this->sendResponse(200, $response);
   }
 
+  public function update(){
+    if($this->input->method() != 'post'){
+      return $this->sendResponse(400, $this->response400);
+    }
+
+    if(empty($this->input->post('owner')) ||
+      empty($this->input->post('crop')) ||
+      empty($this->input->post('hamlet')) ||
+      empty($this->input->post('planting_date'))){
+
+        return $this->sendResponse(400, $this->response400);
+    }
+
+    if($this->sawah_model->checkSawahByID($this->input->post('id')) == 0){
+      return $this->sendResponse(404, $this->response404);
+    }
+
+    $error = $this->sawah_model->updateSawahByID((int)$this->input->post('id'));
+    if(!empty($error['message'])){
+      return $this->sendResponse(500, ["code" => 500, "message" => $error['message']]);
+    }
+
+    $response = array(
+      "code" => 200,
+      "status" => "success"
+    );
+
+    return $this->sendResponse(200, $response);
+  }
+
   public function delete(){
     if($this->input->method() != 'post'){
-      $response = array(
-        "code" => 400,
-        "message" => "Bad Request"
-      );
-
-      return $this->sendResponse(400, $response);
+      return $this->sendResponse(400, $this->response400);
     }
       
     $this->sawah_model->deleteSawah($this->input->post('id'));
@@ -101,7 +138,7 @@ class SawahAPI extends CI_Controller {
     return $this->sendResponse(200, $response);
   }
 
-  public function detail($id){
+  private function fieldDetail($id){
     if($this->sawah_model->checkSawahByID($id) == 0){
       return $this->sendResponse(404, [
         "code" => 404,

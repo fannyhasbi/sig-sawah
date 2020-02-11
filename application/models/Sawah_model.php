@@ -50,6 +50,20 @@ class Sawah_model extends CI_Model {
     return $q->row();
   }
 
+  public function updateSawahByID($id){
+    $data = array(
+      "landowner" => $this->input->post('owner'),
+      "crop" => $this->input->post('crop'),
+      "hamlet" => $this->input->post('hamlet'),
+      "planting_date" => $this->input->post('planting_date')
+    );
+
+    $this->db->where('id', $id);
+    $this->db->update('field', $data);
+
+    return $this->db->error();
+  }
+
   public function deleteSawah($id_sawah){
     $this->deleteGeometry($id_sawah);
 
