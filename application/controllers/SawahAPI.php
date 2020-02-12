@@ -127,8 +127,8 @@ class SawahAPI extends CI_Controller {
     if($this->input->method() != 'post'){
       return $this->sendResponse(400, $this->response400);
     }
-      
-    $this->sawah_model->deleteSawah($this->input->post('id'));
+
+    // $this->sawah_model->deleteSawah($this->input->post('id'));
 
     $response = array(
       "code" => 200,

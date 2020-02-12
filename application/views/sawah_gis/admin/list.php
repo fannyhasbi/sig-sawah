@@ -12,40 +12,49 @@
   <script src="<?= base_url('assets/js/sweetalert2.min.js'); ?>"></script>
   <script src="<?= base_url('assets/js/flatpickr.js'); ?>"></script>
   <script>
+  function turn_overlay(state){
+    state === true ? document.getElementById('loading-overlay').style.display = 'flex' : document.getElementById('loading-overlay').style.display = 'none';
+  }
+  
   function delete_sawah(id){
     Swal.fire({
       text: 'Yakin ingin menghapus?',
       icon: 'warning',
       showCancelButton: true,
-      preConfirm: () => {
-        $.ajax({
-          url: `<?= site_url('api/sawah/delete'); ?>`,
-          type: 'POST',
-          cache: false,
-          data: {
-            id: id,
-          },
-          error: function(err){
-              console.log('Error deleting data', err);
-          },
-          success: function(response){ 
-            Swal.fire({
-              icon: 'success',
-              text: 'Lahan berhasil dihapus',
-              toast: true,
-              position: 'top',
-              showConfirmButton: false,
-              timer: 4000,
-            });
+    }).then((result) => {
+      if(!result.value) return;
+      
+      turn_overlay(true);
+      $.ajax({
+        url: `<?= site_url('api/sawah/delete'); ?>`,
+        type: 'POST',
+        cache: false,
+        data: {
+          id: id,
+        },
+        error: function(err){
+            console.log('Error deleting data', err);
+        },
+        success: function(response){ 
+          Swal.fire({
+            icon: 'success',
+            text: 'Lahan berhasil dihapus',
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 4000,
+          });
 
-            location.reload();
-          }
-        });
-      }
-    });
+          location.reload();
+        }
+      }).done(() => {
+        turn_overlay(false);
+      });
+    })
   }
 
   function get_detail(id){
+    turn_overlay(true);
     return $.ajax({
       url: `<?= base_url('api/sawah/'); ?>${id}`,
       type: 'GET',
@@ -74,10 +83,12 @@
           console.log('Error', response);
         }
       }
+    }).done(() => {
+      turn_overlay(false);
     });
   }
 
-  async function update_sawah(id){
+  async function show_form(id){
     get_detail(id).then( async () => {
       const { value: formValues, dismiss } = await Swal.fire({
         title: 'Isi Informasi Lahan',
@@ -145,6 +156,7 @@
   }
 
   function sendUpdate(data){
+    turn_overlay(true);
     $.ajax({
       url: `<?= base_url('api/sawah/update'); ?>`,
       type: 'POST',
@@ -189,6 +201,8 @@
           console.log('Error in response', response);
         }
       }
+    }).done(() => {
+      turn_overlay(false);
     });
   }
   </script>
@@ -217,7 +231,7 @@
       <td id="<?= 'td-hamlet-'.$sawah->id ?>"><?= $sawah->hamlet; ?></td>
       <td id="<?= 'td-crop-'.$sawah->id ?>"><?= $sawah->crop; ?></td>
       <td>
-        <button class="btn btn-sm btn-outline-secondary" onclick="update_sawah(<?= $sawah->id; ?>)"><i class="fa fa-pen"></i></button>
+        <button class="btn btn-sm btn-outline-secondary" onclick="show_form(<?= $sawah->id; ?>)"><i class="fa fa-pen"></i></button>
         <button class="btn btn-sm btn-outline-danger" onclick="delete_sawah(<?= $sawah->id; ?>)"><i class="fa fa-times"></i></button>
       </td>
     </tr>
