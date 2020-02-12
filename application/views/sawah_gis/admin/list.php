@@ -21,6 +21,7 @@
       text: 'Yakin ingin menghapus?',
       icon: 'warning',
       showCancelButton: true,
+      cancelButtonText: 'Batalkan'
     }).then((result) => {
       if(!result.value) return;
       
@@ -151,7 +152,9 @@
 
       return formValues;
     }).then((data) => {
-      sendUpdate(data);
+      if(data !== undefined){
+        sendUpdate(data);
+      }
     });
   }
 
@@ -210,7 +213,7 @@
   <title>Dashboard | Sistem Informasi Geografis Persawahan Desa Karangsari</title>
 </head>
 <body>
-  <div id="loading-overlay" class="h-100 w-100 position-absolute justify-content-center align-items-center" style="display: flex; background-color: rgba(10, 10, 10, 0.2)">
+  <div id="loading-overlay" class="h-100 w-100 position-absolute justify-content-center align-items-center" style="display: flex; background-color: rgba(0, 0, 0, 0.4)">
     <div class="spinner-grow text-primary" role="status">
       <span class="sr-only">Loading...</span>
     </div>
