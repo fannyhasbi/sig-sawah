@@ -45,70 +45,106 @@
     });
   }
 
-  async function update_sawah(id){
-    const { value: formValues, dismiss } = await Swal.fire({
-      title: 'Isi Informasi Lahan',
-      html: `
-        <div id="field-form">
-          <table>
-            <tr>
-              <th>Pemilik</th>
-              <td><input type="text" id="owner-name" class="swal2-input" placeholder="Pemilik"></td>
-            </tr>
-            <tr>
-              <th>Tanaman</th>
-              <td><input type="text" id="crop" class="swal2-input" placeholder="Tanaman"></td>
-            </tr>
-            <tr>
-              <th>Dusun</th>
-              <td><input type="text" id="hamlet" class="swal2-input" placeholder="Dusun"></td>
-            </tr>
-            <tr>
-              <th>Tanggal Tanam</th>
-              <td><input type="text" id="planting-date" class="swal2-input datepickr" placeholder="Tanggal Tanam"></td>
-            </tr>
-          </table>
-        </div>
-        `,
-      focusConfirm: false,
-      confirmButtonText: 'Simpan',
-      confirmButtonColor: '#0c0',
-      allowOutsideClick: false,
-      allowEscapeKey: false,
-      allowEnterKey: false,
-      showCancelButton: true,
-      cancelButtonText: 'Batalkan',
-      onOpen: () => {
-        flatpickr(".datepickr", {});
+  function get_detail(id){
+    return $.ajax({
+      url: `<?= base_url('api/sawah/'); ?>${id}`,
+      type: 'GET',
+      error: function(err){
+        Swal.fire({
+          title: 'Terjadi kesalahan',
+          icon: 'error',
+          toast: true
+        });
+        console.log('Error sending data', err);
       },
-      preConfirm: () => {
-        let v = {
-          ownerName: document.getElementById('owner-name').value,
-          crop: document.getElementById('crop').value,
-          hamlet: document.getElementById('hamlet').value,
-          plantingDate: document.getElementById('planting-date').value,
+      success: function(response){
+        if(response.code === 200){
+          detail = response.data;
         }
-
-        // check empty value
-        for (let [, val] of Object.entries(v)) {
-          if(val === ''){
-            Swal.showValidationMessage(`Harap isi semua input yang ada`);
-          }
+        else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Terjadi kesalahan',
+            text: response.message,
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 4000,
+          });
+          console.log('Error', response);
         }
-
-        if(!v.plantingDate.match(/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/i)){
-          Swal.showValidationMessage(`Format tanggal salah`);
-        }
-
-        return v;
       }
     });
-
-    formValues.id = id;
-    updateData(formValues);
   }
 
-  function updateData(data){
+  async function update_sawah(id){
+    get_detail(id).then( async () => {
+      const { value: formValues, dismiss } = await Swal.fire({
+        title: 'Isi Informasi Lahan',
+        html: `
+          <div id="field-form">
+            <table>
+              <tr>
+                <th>Pemilik</th>
+                <td><input type="text" id="owner-name" class="swal2-input" placeholder="Pemilik" value="${detail.landowner}"></td>
+              </tr>
+              <tr>
+                <th>Tanaman</th>
+                <td><input type="text" id="crop" class="swal2-input" placeholder="Tanaman" value="${detail.crop}"></td>
+              </tr>
+              <tr>
+                <th>Dusun</th>
+                <td><input type="text" id="hamlet" class="swal2-input" placeholder="Dusun" value="${detail.hamlet}"></td>
+              </tr>
+              <tr>
+                <th>Tanggal Tanam</th>
+                <td><input type="text" id="planting-date" class="swal2-input datepickr" placeholder="Tanggal Tanam" value="${detail.planting_date}"></td>
+              </tr>
+            </table>
+          </div>
+          `,
+          focusConfirm: false,
+          confirmButtonText: 'Simpan',
+          confirmButtonColor: '#0c0',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          allowEnterKey: false,
+          showCancelButton: true,
+          cancelButtonText: 'Batalkan',
+        onOpen: () => {
+          flatpickr(".datepickr", {});
+        },
+        preConfirm: () => {
+          let v = {
+            ownerName: document.getElementById('owner-name').value,
+            crop: document.getElementById('crop').value,
+            hamlet: document.getElementById('hamlet').value,
+            plantingDate: document.getElementById('planting-date').value,
+          }
+
+          // check empty value
+          for (let [, val] of Object.entries(v)) {
+            if(val === ''){
+              Swal.showValidationMessage(`Harap isi semua input yang ada`);
+            }
+          }
+
+          if(!v.plantingDate.match(/([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))/i)){
+            Swal.showValidationMessage(`Format tanggal salah`);
+          }
+
+          v.id = id;
+          return v;
+        }
+      });
+
+      return formValues;
+    }).then((data) => {
+      sendUpdate(data);
+    });
+  }
+
+  function sendUpdate(data){
     $.ajax({
       url: `<?= base_url('api/sawah/update'); ?>`,
       type: 'POST',
@@ -124,6 +160,7 @@
         Swal.fire({
           title: 'Terjadi kesalahan',
           icon: 'error',
+          toast: true
         });
         console.log('Error sending data', err);
       },
@@ -159,6 +196,11 @@
   <title>Dashboard | Sistem Informasi Geografis Persawahan Desa Karangsari</title>
 </head>
 <body>
+  <div id="loading-overlay" class="h-100 w-100 position-absolute justify-content-center align-items-center" style="display: flex; background-color: rgba(10, 10, 10, 0.2)">
+    <div class="spinner-grow text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
   <h1>Daftar Petak Sawah <span class="text-muted">Desa Karangsari</span></h1>
   <table class="table table-bordered table-responsive">
     <tr>
@@ -171,9 +213,9 @@
     <?php $no = 1; foreach($all_sawah as $sawah): ?>
     <tr>
       <td><?= $no; ?></td>
-      <td><?= $sawah->landowner; ?></td>
-      <td><?= $sawah->hamlet; ?></td>
-      <td><?= $sawah->crop; ?></td>
+      <td id="<?= 'td-owner-'.$sawah->id ?>"><?= $sawah->landowner; ?></td>
+      <td id="<?= 'td-hamlet-'.$sawah->id ?>"><?= $sawah->hamlet; ?></td>
+      <td id="<?= 'td-crop-'.$sawah->id ?>"><?= $sawah->crop; ?></td>
       <td>
         <button class="btn btn-sm btn-outline-secondary" onclick="update_sawah(<?= $sawah->id; ?>)"><i class="fa fa-pen"></i></button>
         <button class="btn btn-sm btn-outline-danger" onclick="delete_sawah(<?= $sawah->id; ?>)"><i class="fa fa-times"></i></button>
@@ -185,5 +227,8 @@
   <script src="<?= base_url('assets/js/jquery-3.4.1.min.js'); ?>"></script>
   <script src="<?= base_url('assets/js/popper.min.js'); ?>"></script>
   <script src="<?= base_url('assets/js/bootstrap.min.js'); ?>"></script>
+  <script>
+  document.getElementById('loading-overlay').style.display = 'none';
+  </script>
 </body>
 </html>

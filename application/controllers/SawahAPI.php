@@ -147,7 +147,13 @@ class SawahAPI extends CI_Controller {
     }
 
     $sawah = $this->sawah_model->getSawahByID($id);
-    return $this->sendResponse(200, $sawah);
+    $response = array(
+      "code" => 200,
+      "status" => "success",
+      "data" => $sawah
+    );
+
+    return $this->sendResponse(200, $response);
   }
 
 }
