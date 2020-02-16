@@ -1,11 +1,12 @@
 "use strict"
 
+var url = "http://localhost/sig-sawah/";
 var centerView = new L.LatLng(-7.0252604, 110.8902910);
 var mymap = L.map('mapid').setView(centerView, 17);
 
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZmFubnloYXNiaSIsImEiOiJjazR5NDAyeGwwN3FwM2t0YnhlbTEzazE4In0.Ki9RdnOUANwx5NeK7mHpSQ', {
-  id: 'mapbox/streets-v11',
-  // id: 'mapbox/satellite-v9',
+  // id: 'mapbox/streets-v11',
+  id: 'mapbox/satellite-v9',
   accessToken: 'pk.eyJ1IjoiZmFubnloYXNiaSIsImEiOiJjazR5NDAyeGwwN3FwM2t0YnhlbTEzazE4In0.Ki9RdnOUANwx5NeK7mHpSQ'
 }).addTo(mymap);
 
@@ -389,15 +390,6 @@ async function popupForm(color){
   }
   sendPolygonJSON(sendData);
   
-  Swal.fire({
-    icon: 'success',
-    text: 'Lahan berhasil disimpan',
-    toast: true,
-    position: 'top',
-    showConfirmButton: false,
-    timer: 4000,
-  });
-  
   drawingState = true;
   finishPolyline();
 }
@@ -410,57 +402,58 @@ function sendPolygonJSON(data){
       ownerName: data.ownerName,
       crop: data.crop,
       hamlet: data.hamlet,
-      plantingDate: data.plantingDate
+      planting_date: data.plantingDate
     }
   }
-  polygonGeoJSON = JSON.stringify(polygonGeoJSON);
-  console.log(polygonGeoJSON);
+
+  console.log(data);
+
+  $.ajax({
+    url: `${url}api/sawah`,
+    type: 'POST',
+    cache: false,
+    data: {
+      color: data.color,
+      owner: data.ownerName,
+      crop: data.crop,
+      hamlet: data.hamlet,
+      planting_date: data.plantingDate,
+      coordinates: JSON.stringify(polygonGeoJSON.geometry.coordinates)
+    },
+    error: function(err){
+        console.log('Error sending data', err);
+    },
+    success: function(response){ 
+      console.log(response);
+      Swal.fire({
+        icon: 'success',
+        text: 'Lahan berhasil disimpan',
+        toast: true,
+        position: 'top',
+        showConfirmButton: false,
+        timer: 4000,
+      });
+    }
+  });
 }
 
 function getGeoJSONData(){
-  let sebelum = `{
-    "type": "FeatureCollection",
-    "features": [
-      {
-        "type":"Feature",
-        "properties":{
-          "color": "#dc3",
-          "popupContent": {
-            "ownerName": "Fanny Hasbi",
-            "crop": "Padi",
-            "hamlet": "Panjunan",
-            "plantingDate": "2019-12-10"
-          }
-        },
-        "geometry":{
-          "type":"Polygon",
-          "coordinates":[[
-            [110.88759541511537,-7.024773407376361],[110.88780999183656,-7.026412667963688],[110.88959097862245,-7.025571749293507],[110.88935494422914,-7.024730829102284],[110.88863611221315,-7.024432781074501],[110.88759541511537,-7.024773407376361]
-          ]]
-        }
-      },
-      {
-        "type":"Feature",
-        "properties":{
-          "color": "#7d9",
-          "popupContent": {
-            "ownerName": "Abda",
-            "crop": "Padi",
-            "hamlet": "Panjunan",
-            "plantingDate": "2019-12-10"
-          }
-        },
-        "geometry":{
-          "type":"Polygon",
-          "coordinates":[[
-            [110.89269161224367,-7.024102799106674],[110.89276671409608,-7.02516725622679],[110.89474081993104,-7.025177900785676],[110.89496612548828,-7.024730829102284],[110.89493393898012,-7.024070865355427],[110.89456915855409,-7.023464123664982],[110.89362502098085,-7.023464123664982],[110.89302420616151,-7.023708949354647],[110.89269161224367,-7.024102799106674]
-          ]]
-        }
-      }
-    ]
-  }`;
+  let yoyoy;
+
+  $.ajax({
+    url: `${url}api/sawah`,
+    type: 'GET',
+    async: false,
+    cache: false,
+    error: function(err){
+        console.log(err);
+    },
+    success: function(response){ 
+      yoyoy = response.data;
+    }
+  });
   
-  return JSON.parse(sebelum);
+  return yoyoy;
 }
 
 function onEachFeatureCallback(feature, layer){
